@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tutor Finder</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="container">
+        <h1>Find a Tutor</h1>
+        <label for="subject">Select a subject:</label>
+        <select id="subject">
+            <option value="Math">Math</option>
+            <option value="Physics">Physics</option>
+            <option value="English">English</option>
+            <option value="History">History</option>
+        </select>
+        <button onclick="findTutors()">Find Tutors</button>
+        
+        <div id="results"></div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
+
