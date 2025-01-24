@@ -11,7 +11,7 @@ const VALID_CODES = {
 
 // Maximum skill levels for each subject
 const MAX_LEVELS = [3, 2, 3, 2, 5, 4, 7]; // Aligns with subject ranges
-const SUBJECTS = ["CS", "Biology", "Physics", "Chemistry", "Social Studies", "English", "Math"];
+const SUBJECTS = ["Computer Science", "Biology", "Physics", "Chemistry", "Social Studies", "English", "Math"];
 
 // JSON Data placeholder
 let jsonData = {};
