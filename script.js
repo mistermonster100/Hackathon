@@ -33,8 +33,16 @@ function saveTutors(tutors) {
 
 // Load tutors from `localStorage` or `students.json`
 function loadTutors() {
-    const localTutors = JSON.parse(localStorage.getItem("tutors")) || [];
-    return [...jsonData.students, ...localTutors];
+    const jsonTutors = jsonData.students || []; // Load from JSON
+    const localTutors = JSON.parse(localStorage.getItem("tutors")) || []; // Load from localStorage
+
+    // Remove duplicates by comparing email addresses
+    const combinedTutors = [...jsonTutors, ...localTutors];
+    const uniqueTutors = combinedTutors.filter((tutor, index, self) =>
+        index === self.findIndex(t => t.email === tutor.email)
+    );
+
+    return uniqueTutors;
 }
 
 // Update tutor's skill level
@@ -43,12 +51,12 @@ function updateSkill(tutor, code, level) {
         return { success: false, message: "Invalid teacher-provided code." };
     }
 
-    const subjectIndex = VALID_CODES[code];
+    const subjectIndex = VALID_CODES[code]; // Get the subject index based on VALID_CODES
     if (level < 0 || level > MAX_LEVELS[subjectIndex]) {
         return { success: false, message: `Invalid skill level for ${SUBJECTS[subjectIndex]}. Max level: ${MAX_LEVELS[subjectIndex]}` };
     }
 
-    // Update competency (specific digit in the string)
+    // Update the correct digit in the competency string
     const skillDigits = tutor.competency.split("").map(Number);
     skillDigits[subjectIndex] = level;
     tutor.competency = skillDigits.join("");
