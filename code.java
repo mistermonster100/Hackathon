@@ -7,7 +7,7 @@ public class Tutor {
     private int skillNumber;
 
     // Subjects and their max levels
-    private static final String[] SUBJECTS = {"CS", "Biology", "Physics", "Chemistry", "Social Studies", "English", "Math"};
+    private static final String[] SUBJECTS = {"Computer Science", "Biology", "Physics", "Chemistry", "Social Studies", "English", "Math"};
     private static final int[] MAX_LEVELS = {2, 2, 3, 2, 5, 4, 7}; // Updated Math max level to 7
 
     // A map to store valid codes for each subject (this would typically come from a database or external system)
