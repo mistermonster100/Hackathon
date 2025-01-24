@@ -33,13 +33,13 @@ function saveTutors(tutors) {
 
 // Load tutors from `localStorage` or `students.json`
 function loadTutors() {
-    const jsonTutors = jsonData.students || []; // Load from JSON
-    const localTutors = JSON.parse(localStorage.getItem("tutors")) || []; // Load from localStorage
+    const jsonTutors = jsonData.students || []; // Load preset tutors from JSON
+    const localTutors = JSON.parse(localStorage.getItem("tutors")) || []; // Load new tutors from localStorage
 
-    // Remove duplicates by comparing email addresses
+    // Combine and deduplicate tutors based on unique email
     const combinedTutors = [...jsonTutors, ...localTutors];
     const uniqueTutors = combinedTutors.filter((tutor, index, self) =>
-        index === self.findIndex(t => t.email === tutor.email)
+        index === self.findIndex(t => t.email === tutor.email) // Deduplicate by email
     );
 
     return uniqueTutors;
@@ -106,27 +106,27 @@ function submitSignupForm(event) {
 
 // Find tutors based on selected subject and subcategory
 async function findTutors() {
-    await loadJSON(); // Load JSON data if not already loaded
+    await loadJSON(); // Ensure JSON data is loaded
 
     const subject = document.getElementById("subject").value; // Selected subject
     const subcategory = document.getElementById("subcategory").value; // Selected subcategory
     const resultsDiv = document.getElementById("results");
     resultsDiv.innerHTML = ""; // Clear previous results
 
-    // Validate user selection
+    // Validate user input
     if (!subject || !subcategory) {
         resultsDiv.innerHTML = "<p>Please select both a subject and a subcategory.</p>";
         return;
     }
 
-    // Find the subject index
-    const subjectIndex = Object.keys(jsonData.subjects).indexOf(subject);
+    // Find subject index
+    const subjectIndex = SUBJECTS.indexOf(subject);
     if (subjectIndex === -1) {
         resultsDiv.innerHTML = "<p>Invalid subject selected.</p>";
         return;
     }
 
-    // Find the subcategory index
+    // Find subcategory index
     const subcategoryIndex = jsonData.subjects[subject].indexOf(subcategory);
     if (subcategoryIndex === -1) {
         resultsDiv.innerHTML = "<p>Invalid subcategory selected.</p>";
