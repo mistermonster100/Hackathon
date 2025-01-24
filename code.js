@@ -11,7 +11,7 @@ const VALID_CODES = {
 
 // Maximum skill levels per subject
 const MAX_LEVELS = [2, 2, 3, 2, 5, 4, 7]; // Aligns with competency ranges
-const SUBJECTS = ["CS", "Biology", "Physics", "Chemistry", "Social Studies", "English", "Math"];
+const SUBJECTS = ["Computer Science", "Biology", "Physics", "Chemistry", "Social Studies", "English", "Math"];
 
 // Load tutors from localStorage (or initialize an empty array)
 function loadTutors() {
