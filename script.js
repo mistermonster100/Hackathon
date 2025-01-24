@@ -12,21 +12,15 @@ async function submitSignupForm(event) {
     event.preventDefault();
 
     const form = document.getElementById("signup-form");
-    const newTutor = {
-        name: form.name.value,
-        email: form.email.value,
-        phone: form.phone.value,
-        competency: "0000000" // Default competency
-    };
+    const name = form.name.value;
+    const email = form.email.value;
+    const phone = form.phone.value;
+    const code = form["teacher-code"].value;
+    const proficiency = form["proficiency-level"].value;
 
-    // Get locally stored tutors
-    let tutors = JSON.parse(localStorage.getItem("tutors")) || [];
-    tutors.push(newTutor);
+    const message = addOrUpdateTutor(name, email, phone, code, proficiency);
+    document.getElementById("message").innerText = message;
 
-    // Save back to localStorage
-    localStorage.setItem("tutors", JSON.stringify(tutors));
-
-    document.getElementById("message").innerText = "Tutor added successfully!";
     form.reset();
 }
 
