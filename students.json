@@ -1,3 +1,31 @@
 {
-  "students": []
+  "students": [
+    {
+      "name": "Alice Johnson",
+      "email": "alice.johnson@example.com",
+      "phone": "123-456-7890",
+      "competency": "1234567"
+    },
+    {
+      "name": "Bob Smith",
+      "email": "bob.smith@example.com",
+      "phone": "234-567-8901",
+      "competency": "7654321"
+    },
+    {
+      "name": "Charlie Davis",
+      "email": "charlie.davis@example.com",
+      "phone": "345-678-9012",
+      "competency": "1726354"
+    }
+  ],
+  "subjects": {
+    "Math": ["Algebra", "Geometry", "Algebra 2", "Precalculus", "Calculus AB", "Calculus BC", "Calculus 3"],
+    "English": ["English 9", "English 10", "English 11", "English 12"],
+    "History": ["World History", "AP World History", "US History", "AP US History", "European History"],
+    "Physics": ["Physics 1", "Physics 2", "Physics C"],
+    "Chemistry": ["Honors Chemistry", "ASCP/AP Chemistry"],
+    "Computer Science": ["CS Principles", "CS 1", "CS A", "Software Development"],
+    "Biology": ["Honors Biology", "AP Biology"]
+  }
 }
