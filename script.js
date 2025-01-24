@@ -8,11 +8,75 @@ async function loadJSON() {
         console.error("Error loading JSON:", error);
     }
 }
+async function submitSignupForm(event) {
+    event.preventDefault();
+
+    const form = document.getElementById("signup-form");
+    const newTutor = {
+        name: form.name.value,
+        email: form.email.value,
+        phone: form.phone.value,
+        competency: "0000000" // Default competency
+    };
+
+    // Get locally stored tutors
+    let tutors = JSON.parse(localStorage.getItem("tutors")) || [];
+    tutors.push(newTutor);
+
+    // Save back to localStorage
+    localStorage.setItem("tutors", JSON.stringify(tutors));
+
+    document.getElementById("message").innerText = "Tutor added successfully!";
+    form.reset();
+}
 
 async function findTutors() {
-    if (Object.keys(jsonData).length === 0) {
-        await loadJSON(); // Load JSON if not already loaded
+    await loadJSON();
+
+    // Combine JSON data and localStorage data
+    const storedTutors = JSON.parse(localStorage.getItem("tutors")) || [];
+    const allTutors = [...jsonData.students, ...storedTutors];
+
+    const subjectSelect = document.getElementById("subject");
+    const subcategorySelect = document.getElementById("subcategory");
+    const resultsDiv = document.getElementById("results");
+    resultsDiv.innerHTML = ""; // Clear previous results
+
+    let subject = subjectSelect.value;
+    let subcategory = subcategorySelect.value;
+
+    if (!subject || !subcategory) {
+        resultsDiv.innerHTML = "<p>Please select both a subject and a subcategory.</p>";
+        return;
     }
+
+    let subjectIndex = Object.keys(jsonData.subjects).indexOf(subject);
+    if (subjectIndex === -1) {
+        resultsDiv.innerHTML = "<p>Invalid subject selected.</p>";
+        return;
+    }
+
+    let subcategoryIndex = jsonData.subjects[subject].indexOf(subcategory);
+    if (subcategoryIndex === -1) {
+        resultsDiv.innerHTML = "<p>Invalid subcategory selected.</p>";
+        return;
+    }
+
+    let requiredProficiency = subcategoryIndex + 1;
+
+    let tutors = allTutors
+        .filter(student => parseInt(student.competency[subjectIndex]) >= requiredProficiency)
+        .map(student => `
+            <p>
+                <strong>${student.name}</strong> - Proficiency: ${student.competency[subjectIndex]}<br>
+                Email: <a href="mailto:${student.email}">${student.email}</a><br>
+                Phone: ${student.phone}
+            </p>
+        `);
+
+    resultsDiv.innerHTML = tutors.length ? tutors.join("") : `<p>No tutors found for ${subcategory} (requires level ${requiredProficiency}+).</p>`;
+}
+
 
     const subjectSelect = document.getElementById("subject");
     const subcategorySelect = document.getElementById("subcategory");
