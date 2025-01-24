@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tutor Signup</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="script.js" defer></script>
+    <script src="code.js" defer></script>
 </head>
 <body>
 <div id="signup-container">
@@ -23,16 +25,13 @@
         <input type="text" id="teacher-code" required>
 
         <label for="proficiency-level">Proficiency Level:</label>
-        <input type="text" id="proficiency-level" required>
+        <input type="number" id="proficiency-level" min="1" max="7" required>
 
         <button type="submit">Sign Up</button>
     </form>
     <p id="message"></p>
 
-
     <button onclick="location.href='index.html'">Back to Home</button>
 </div>
-
-<script src="signup.js"></script>
 </body>
 </html>
