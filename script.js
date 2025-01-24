@@ -1,14 +1,86 @@
-let jsonData = {}; // Placeholder for JSON data
+// Valid teacher-provided codes for certification
+const VALID_CODES = {
+    "CS-Rho": 0,       // Computer Science
+    "BIO-Phi": 1,      // Biology
+    "PHYS-Theta": 2,   // Physics
+    "CHEM-Lambda": 3,  // Chemistry
+    "SS-Eta": 4,       // Social Studies
+    "ENG-Mu": 5,       // English
+    "MATH-Pi": 6       // Math
+};
 
+// Maximum skill levels for each subject
+const MAX_LEVELS = [2, 2, 3, 2, 5, 4, 7]; // Aligns with subject ranges
+const SUBJECTS = ["CS", "Biology", "Physics", "Chemistry", "Social Studies", "English", "Math"];
+
+// JSON Data placeholder
+let jsonData = {};
+
+// Load JSON data from `students.json`
 async function loadJSON() {
     try {
-        const response = await fetch("students.json"); // Load external JSON file
+        const response = await fetch("students.json");
         jsonData = await response.json();
     } catch (error) {
         console.error("Error loading JSON:", error);
     }
 }
-async function submitSignupForm(event) {
+
+// Save new tutors locally in `localStorage`
+function saveTutors(tutors) {
+    localStorage.setItem("tutors", JSON.stringify(tutors));
+}
+
+// Load tutors from `localStorage` or `students.json`
+function loadTutors() {
+    const localTutors = JSON.parse(localStorage.getItem("tutors")) || [];
+    return [...jsonData.students, ...localTutors];
+}
+
+// Update tutor's skill level
+function updateSkill(tutor, code, level) {
+    if (!VALID_CODES.hasOwnProperty(code)) {
+        return { success: false, message: "Invalid teacher-provided code." };
+    }
+
+    const subjectIndex = VALID_CODES[code];
+    if (level < 0 || level > MAX_LEVELS[subjectIndex]) {
+        return { success: false, message: `Invalid skill level for ${SUBJECTS[subjectIndex]}. Max level: ${MAX_LEVELS[subjectIndex]}` };
+    }
+
+    // Update competency (specific digit in the string)
+    const skillDigits = tutor.competency.split("").map(Number);
+    skillDigits[subjectIndex] = level;
+    tutor.competency = skillDigits.join("");
+
+    return { success: true, message: `Successfully updated ${SUBJECTS[subjectIndex]} to level ${level}.` };
+}
+
+// Add or update a tutor's profile
+function addOrUpdateTutor(name, email, phone, code, proficiency) {
+    let tutors = loadTutors();
+    let tutor = tutors.find(t => t.email === email);
+
+    if (!tutor) {
+        tutor = {
+            name,
+            email,
+            phone,
+            competency: "0000000" // Default competency: all zeros
+        };
+        tutors.push(tutor);
+    }
+
+    const result = updateSkill(tutor, code, parseInt(proficiency));
+    if (result.success) {
+        saveTutors(tutors);
+    }
+
+    return result.message;
+}
+
+// Handle tutor signup form submission
+function submitSignupForm(event) {
     event.preventDefault();
 
     const form = document.getElementById("signup-form");
@@ -24,122 +96,73 @@ async function submitSignupForm(event) {
     form.reset();
 }
 
+// Find tutors based on selected subject and subcategory
 async function findTutors() {
     await loadJSON();
 
-    // Combine JSON data and localStorage data
-    const storedTutors = JSON.parse(localStorage.getItem("tutors")) || [];
-    const allTutors = [...jsonData.students, ...storedTutors];
-
-    const subjectSelect = document.getElementById("subject");
-    const subcategorySelect = document.getElementById("subcategory");
+    const subject = document.getElementById("subject").value;
+    const subcategory = document.getElementById("subcategory").value;
     const resultsDiv = document.getElementById("results");
     resultsDiv.innerHTML = ""; // Clear previous results
-
-    let subject = subjectSelect.value;
-    let subcategory = subcategorySelect.value;
 
     if (!subject || !subcategory) {
         resultsDiv.innerHTML = "<p>Please select both a subject and a subcategory.</p>";
         return;
     }
 
-    let subjectIndex = Object.keys(jsonData.subjects).indexOf(subject);
+    const subjectIndex = Object.keys(jsonData.subjects).indexOf(subject);
     if (subjectIndex === -1) {
         resultsDiv.innerHTML = "<p>Invalid subject selected.</p>";
         return;
     }
 
-    let subcategoryIndex = jsonData.subjects[subject].indexOf(subcategory);
+    const subcategoryIndex = jsonData.subjects[subject].indexOf(subcategory);
     if (subcategoryIndex === -1) {
         resultsDiv.innerHTML = "<p>Invalid subcategory selected.</p>";
         return;
     }
 
-    let requiredProficiency = subcategoryIndex + 1;
+    const requiredProficiency = subcategoryIndex + 1;
 
-    let tutors = allTutors
-        .filter(student => parseInt(student.competency[subjectIndex]) >= requiredProficiency)
-        .map(student => `
+    const tutors = loadTutors()
+        .filter(tutor => parseInt(tutor.competency[subjectIndex]) >= requiredProficiency)
+        .map(tutor => `
             <p>
-                <strong>${student.name}</strong> - Proficiency: ${student.competency[subjectIndex]}<br>
-                Email: <a href="mailto:${student.email}">${student.email}</a><br>
-                Phone: ${student.phone}
+                <strong>${tutor.name}</strong> - Proficiency: ${tutor.competency[subjectIndex]}<br>
+                Email: <a href="mailto:${tutor.email}">${tutor.email}</a><br>
+                Phone: ${tutor.phone}
             </p>
         `);
 
-    resultsDiv.innerHTML = tutors.length ? tutors.join("") : `<p>No tutors found for ${subcategory} (requires level ${requiredProficiency}+).</p>`;
+    resultsDiv.innerHTML = tutors.length
+        ? tutors.join("")
+        : `<p>No tutors found for ${subcategory} (requires level ${requiredProficiency}+).</p>`;
 }
 
-
-    const subjectSelect = document.getElementById("subject");
-    const subcategorySelect = document.getElementById("subcategory");
-    const resultsDiv = document.getElementById("results");
-    resultsDiv.innerHTML = ""; // Clear previous results
-
-    let subject = subjectSelect.value;
-    let subcategory = subcategorySelect.value;
-
-    if (!subject || !subcategory) {
-        resultsDiv.innerHTML = "<p>Please select both a subject and a subcategory.</p>";
-        return;
-    }
-
-    let subjectIndex = Object.keys(jsonData.subjects).indexOf(subject);
-    if (subjectIndex === -1) {
-        resultsDiv.innerHTML = "<p>Invalid subject selected.</p>";
-        return;
-    }
-
-    let subcategoryIndex = jsonData.subjects[subject].indexOf(subcategory);
-    if (subcategoryIndex === -1) {
-        resultsDiv.innerHTML = "<p>Invalid subcategory selected.</p>";
-        return;
-    }
-
-    let requiredProficiency = subcategoryIndex + 1; // Start at 2 for the first subcategory
-
-    let tutors = jsonData.students
-        .filter(student => parseInt(student.competency[subjectIndex]) >= requiredProficiency)
-        .map(student => `
-            <p>
-                <strong>${student.name}</strong> - Proficiency: ${student.competency[subjectIndex]}<br>
-                Email: <a href="mailto:${student.email}">${student.email}</a><br>
-                Phone: ${student.phone}
-            </p>
-        `);
-
-    resultsDiv.innerHTML = tutors.length ? tutors.join("") : `<p>No tutors found for ${subcategory} (requires level ${requiredProficiency}+).</p>`;
-}
-
-// Load JSON data on page load
-window.onload = loadJSON;
-
-
-const subcategories = {
-            "Math": ["Algebra", "Geometry", "Algebra 2", "Precalculus", "Calculus AB", "Calculus BC", "Calculus 3"],
-            "English": ["English 9", "English 10", "English 11", "English 12"],
-            "History": ["World History", "AP World History", "US History", "AP US History", "European History"],
-            "Physics": ["Physics 1", "Physics 2", "Physics C"],
-            "Chemistry": ["Honors Chemistry", "ASCP/AP Chemistry"],
-            "Computer Science": ["CS Principles", "CS 1", "CS A", "Software Development"],
-            "Biology": ["Honors Biology", "AP Biology"]
-        };
-
+// Dynamically update subcategories based on subject selection
 function updateSubcategories() {
-            const subject = document.getElementById("subject").value;
-            const subcategorySelect = document.getElementById("subcategory");
-            subcategorySelect.innerHTML = '';
+    const subject = document.getElementById("subject").value;
+    const subcategorySelect = document.getElementById("subcategory");
+    subcategorySelect.innerHTML = '';
 
-            if (subject && subcategories[subject]) {
-                subcategorySelect.style.display = "block";
-                subcategories[subject].forEach(sub => {
-                    let option = document.createElement("option");
-                    option.value = sub;
-                    option.textContent = sub;
-                    subcategorySelect.appendChild(option);
-                });
-            } else {
-                subcategorySelect.style.display = "none";
-            }
-        }
+    if (subject && jsonData.subjects[subject]) {
+        subcategorySelect.style.display = "block";
+        jsonData.subjects[subject].forEach(sub => {
+            const option = document.createElement("option");
+            option.value = sub;
+            option.textContent = sub;
+            subcategorySelect.appendChild(option);
+        });
+    } else {
+        subcategorySelect.style.display = "none";
+    }
+}
+
+// Event Listeners
+document.addEventListener("DOMContentLoaded", () => {
+    if (document.getElementById("signup-form")) {
+        document.getElementById("signup-form").addEventListener("submit", submitSignupForm);
+    }
+
+    loadJSON(); // Preload JSON data
+});
