@@ -4,19 +4,19 @@
       "name": "Alice Johnson",
       "email": "alice.johnson@example.com",
       "phone": "123-456-7890",
-      "competency": "1234567"
+      "competency": "1232503"
     },
     {
       "name": "Bob Smith",
       "email": "bob.smith@example.com",
       "phone": "234-567-8901",
-      "competency": "7654321"
+      "competency": "7350321"
     },
     {
       "name": "Charlie Davis",
       "email": "charlie.davis@example.com",
       "phone": "345-678-9012",
-      "competency": "1726354"
+      "competency": "1441324"
     }
   ],
   "subjects": {
