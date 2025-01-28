@@ -8,6 +8,29 @@ const VALID_CODES = {
     "ENG-Mu": 5,       // English
     "MATH-Pi": 6       // Math
 };
+const MASTER_TEACHER_CODE = "MASTER-DELETE-123"; // Change this for security
+function deleteTutor(email, code) {
+    if (code !== MASTER_TEACHER_CODE) {
+        alert("Invalid master code! You do not have permission to delete accounts.");
+        return;
+    }
+
+    let tutors = JSON.parse(localStorage.getItem("tutors")) || [];
+
+    // Check if the tutor exists
+    const tutorIndex = tutors.findIndex(tutor => tutor.email === email);
+    if (tutorIndex === -1) {
+        alert("Tutor not found or already deleted.");
+        return;
+    }
+
+    // Remove the tutor
+    tutors.splice(tutorIndex, 1);
+    localStorage.setItem("tutors", JSON.stringify(tutors));
+
+    alert(`Tutor with email ${email} has been deleted.`);
+    location.reload(); // Refresh the page to update the list
+}
 
 // Maximum skill levels for each subject
 const MAX_LEVELS = [3, 2, 3, 2, 5, 4, 7]; // Aligns with subject ranges
