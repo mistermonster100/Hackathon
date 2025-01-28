@@ -17,7 +17,7 @@
         <label for="email">Email:</label>
         <input type="email" id="email" required>
 
-        <label for="phone">Phone Number: (Optional) </label>
+        <label for="phone">Phone Number: (Optional)</label>
         <input type="tel" id="phone">
 
         <label for="teacher-code">Teacher Code:</label>
@@ -32,5 +32,17 @@
 
     <button onclick="location.href='index.html'">Back to Home</button>
 </div>
+
+<div id="delete-container">
+    <h3>Delete Tutor</h3>
+    <label for="delete-email">Tutor Email:</label>
+    <input type="email" id="delete-email" placeholder="Enter school email" required>
+
+    <label for="delete-code">Master Code:</label>
+    <input type="password" id="delete-code" placeholder="Enter master code" required>
+
+    <button onclick="deleteTutor(document.getElementById('delete-email').value, document.getElementById('delete-code').value)">Delete Tutor</button>
+</div>
 </body>
 </html>
+
