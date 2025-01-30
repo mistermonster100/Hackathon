@@ -1,33 +1,40 @@
 // Valid teacher-provided codes for certification
 const VALID_CODES = {
-    "MATH-Algebra1": { subject: "Math", level: 1 },
-    "MATH-Geometry": { subject: "Math", level: 2 },
-    "MATH-Algebra2": { subject: "Math", level: 3 },
-    "MATH-Precalculus": { subject: "Math", level: 4 },
-    "MATH-CalculusAB": { subject: "Math", level: 5 },
-    "MATH-CalculusBC": { subject: "Math", level: 6 },
-    "MATH-Calculus3": { subject: "Math", level: 7 },
-    
-    "ENG-English9": { subject: "English", level: 1 },
-    "ENG-English10": { subject: "English", level: 2 },
-    "ENG-English11": { subject: "English", level: 3 },
-    "ENG-English12": { subject: "English", level: 4 },
-    
-    "PHYS-Physics1": { subject: "Physics", level: 1 },
-    "PHYS-Physics2": { subject: "Physics", level: 2 },
-    "PHYS-PhysicsC": { subject: "Physics", level: 3 },
+    "M-A1": { subject: "Math", level: 1 },  // Algebra 1
+    "M-GE": { subject: "Math", level: 2 },  // Geometry
+    "M-A2": { subject: "Math", level: 3 },  // Algebra 2
+    "M-PC": { subject: "Math", level: 4 },  // Precalculus
+    "M-CAB": { subject: "Math", level: 5 }, // Calculus AB
+    "M-CBC": { subject: "Math", level: 6 }, // Calculus BC
+    "M-C3": { subject: "Math", level: 7 },  // Calculus 3
 
-    "CHEM-Honors": { subject: "Chemistry", level: 1 },
-    "CHEM-AP": { subject: "Chemistry", level: 2 },
+    "E-9": { subject: "English", level: 1 },  // English 9
+    "E-10": { subject: "English", level: 2 }, // English 10
+    "E-11": { subject: "English", level: 3 }, // English 11
+    "E-12": { subject: "English", level: 4 }, // English 12
 
-    "CS-Principles": { subject: "Computer Science", level: 1 },
-    "CS-CS1": { subject: "Computer Science", level: 2 },
-    "CS-CSA": { subject: "Computer Science", level: 3 },
-    
-    "BIO-Honors": { subject: "Biology", level: 1 },
-    "BIO-AP": { subject: "Biology", level: 2 }
+    "S-WH": { subject: "Social Studies", level: 1 },  // World History
+    "S-APH": { subject: "Social Studies", level: 2 }, // AP World History
+    "S-UH": { subject: "Social Studies", level: 3 },  // US History
+    "S-APU": { subject: "Social Studies", level: 4 }, // AP US History
+    "S-EH": { subject: "Social Studies", level: 5 },  // European History
+
+    "P-1": { subject: "Physics", level: 1 },  // Physics 1
+    "P-2": { subject: "Physics", level: 2 },  // Physics 2
+    "P-C": { subject: "Physics", level: 3 },  // Physics C
+
+    "C-HC": { subject: "Chemistry", level: 1 },  // Honors Chemistry
+    "C-AP": { subject: "Chemistry", level: 2 },  // AP Chemistry
+
+    "CS-P": { subject: "Computer Science", level: 1 }, // CS Principles
+    "CS-1": { subject: "Computer Science", level: 2 }, // CS 1
+    "CS-A": { subject: "Computer Science", level: 3 }, // CS A
+
+    "B-H": { subject: "Biology", level: 1 },  // Honors Biology
+    "B-AP": { subject: "Biology", level: 2 }  // AP Biology
 };
-const MASTER_TEACHER_CODE = "MASTER-DELETE-123"; // Change this for security
+
+const MASTER_TEACHER_CODE = "PhiChargeEpsilonNot"; // I wonder what that means? ;) (Hint Gauss's Law)
 function deleteTutor(email, code) {
     if (code !== MASTER_TEACHER_CODE) {
         alert("Invalid master code! You do not have permission to delete accounts.");
