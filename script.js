@@ -1,12 +1,31 @@
 // Valid teacher-provided codes for certification
 const VALID_CODES = {
-    "CS-Rho": 0,       // Computer Science
-    "BIO-Phi": 1,      // Biology
-    "PHYS-Theta": 2,   // Physics
-    "CHEM-Lambda": 3,  // Chemistry
-    "SS-Eta": 4,       // Social Studies
-    "ENG-Mu": 5,       // English
-    "MATH-Pi": 6       // Math
+    "MATH-Algebra1": { subject: "Math", level: 1 },
+    "MATH-Geometry": { subject: "Math", level: 2 },
+    "MATH-Algebra2": { subject: "Math", level: 3 },
+    "MATH-Precalculus": { subject: "Math", level: 4 },
+    "MATH-CalculusAB": { subject: "Math", level: 5 },
+    "MATH-CalculusBC": { subject: "Math", level: 6 },
+    "MATH-Calculus3": { subject: "Math", level: 7 },
+    
+    "ENG-English9": { subject: "English", level: 1 },
+    "ENG-English10": { subject: "English", level: 2 },
+    "ENG-English11": { subject: "English", level: 3 },
+    "ENG-English12": { subject: "English", level: 4 },
+    
+    "PHYS-Physics1": { subject: "Physics", level: 1 },
+    "PHYS-Physics2": { subject: "Physics", level: 2 },
+    "PHYS-PhysicsC": { subject: "Physics", level: 3 },
+
+    "CHEM-Honors": { subject: "Chemistry", level: 1 },
+    "CHEM-AP": { subject: "Chemistry", level: 2 },
+
+    "CS-Principles": { subject: "Computer Science", level: 1 },
+    "CS-CS1": { subject: "Computer Science", level: 2 },
+    "CS-CSA": { subject: "Computer Science", level: 3 },
+    
+    "BIO-Honors": { subject: "Biology", level: 1 },
+    "BIO-AP": { subject: "Biology", level: 2 }
 };
 const MASTER_TEACHER_CODE = "MASTER-DELETE-123"; // Change this for security
 function deleteTutor(email, code) {
@@ -88,26 +107,41 @@ function updateSkill(tutor, code, level) {
 }
 
 // Add or update a tutor's profile
-function addOrUpdateTutor(name, email, phone, code, proficiency) {
+function addOrUpdateTutor(name, email, phone, code) {
     let tutors = loadTutors();
     let tutor = tutors.find(t => t.email === email);
+
+    if (!VALID_CODES.hasOwnProperty(code)) {
+        alert("Invalid teacher code! Please enter a valid teacher-provided code.");
+        return;
+    }
+
+    const { subject, level } = VALID_CODES[code];
 
     if (!tutor) {
         tutor = {
             name,
             email,
             phone,
-            competency: "0000000" // Default competency: all zeros
+            competency: "0000000" // Default competency for all subjects (7 digits, all zeroes)
         };
         tutors.push(tutor);
     }
 
-    const result = updateSkill(tutor, code, parseInt(proficiency));
-    if (result.success) {
-        saveTutors(tutors);
+    // Assign the correct skill level based on the teacher code
+    const subjectIndex = SUBJECTS.indexOf(subject);
+    if (subjectIndex === -1) {
+        alert("Error: Subject not found.");
+        return;
     }
 
-    return result.message;
+    // Update the competency string
+    let skillDigits = tutor.competency.split("").map(Number);
+    skillDigits[subjectIndex] = level;
+    tutor.competency = skillDigits.join("");
+
+    saveTutors(tutors);
+    alert(`Successfully set ${subject} skill to level ${level} for ${name}.`);
 }
 
 // Handle tutor signup form submission
@@ -117,13 +151,10 @@ function submitSignupForm(event) {
     const form = document.getElementById("signup-form");
     const name = form.name.value;
     const email = form.email.value;
-    const phone = form.phone.value;
+    const phone = form.phone.value || "N/A";
     const code = form["teacher-code"].value;
-    const proficiency = form["proficiency-level"].value;
 
-    const message = addOrUpdateTutor(name, email, phone, code, proficiency);
-    document.getElementById("message").innerText = message;
-
+    addOrUpdateTutor(name, email, phone, code);
     form.reset();
 }
 
