@@ -37,9 +37,9 @@ const VALID_CODES = {
 const subcategories = {
             "Math": ["Algebra", "Geometry", "Algebra 2", "Precalculus", "Calculus AB", "Calculus BC", "Calculus 3"],
             "English": ["English 9", "English 10", "English 11", "English 12"],
-            "History": ["World History", "AP World History", "US History", "AP US History", "European History"],
+            "Social Studies": ["World History", "AP World History", "US History", "AP US History", "European History"],
             "Physics": ["Physics 1", "Physics 2", "Physics C"],
-            "Chemistry": ["Honors Chemistry", "ASCP/AP Chemistry"],
+            "Chemistry": ["Honors Chemistry", "ACP/AP Chemistry"],
             "Computer Science": ["CS Principles", "CS 1", "CS A", "Software Development"],
             "Biology": ["Honors Biology", "AP Biology"]
 };
