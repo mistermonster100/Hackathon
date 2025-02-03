@@ -233,6 +233,7 @@ function displayTutorClasses(tutor, subject, subjectIndex) {
 }
 
 function updateSubcategories() {
+            console.log("updateSubcategories is working");
             const subject = document.getElementById("subject").value;
             const subcategorySelect = document.getElementById("subcategory");
             subcategorySelect.innerHTML = '';
