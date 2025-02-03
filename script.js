@@ -222,6 +222,23 @@ function displayTutorClasses(tutor, subject, subjectIndex) {
     `;
 }
 
+function updateSubcategories() {
+            const subject = document.getElementById("subject").value;
+            const subcategorySelect = document.getElementById("subcategory");
+            subcategorySelect.innerHTML = '';
+
+            if (subject && subcategories[subject]) {
+                subcategorySelect.style.display = "block";
+                subcategories[subject].forEach(sub => {
+                    let option = document.createElement("option");
+                    option.value = sub;
+                    option.textContent = sub;
+                    subcategorySelect.appendChild(option);
+                });
+            } else {
+                subcategorySelect.style.display = "none";
+            }
+        }
 
 // Event Listeners
 document.addEventListener("DOMContentLoaded", () => {
