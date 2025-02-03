@@ -167,73 +167,47 @@ function submitSignupForm(event) {
 
 // Find tutors based on selected subject and subcategory
 async function findTutors() {
-    await loadJSON(); // Ensure JSON data is loaded
+    await loadJSON(); // Load data from JSON
 
-    const subject = document.getElementById("subject").value; // Selected subject
-    const subcategory = document.getElementById("subcategory").value; // Selected subcategory
+    const subject = document.getElementById("subject").value; // Selected subject (e.g., Math)
+    const subcategory = document.getElementById("subcategory").value; // Selected class (e.g., Algebra 2)
     const resultsDiv = document.getElementById("results");
     resultsDiv.innerHTML = ""; // Clear previous results
 
-    // Validate user input
+    // Validate selection
     if (!subject || !subcategory) {
         resultsDiv.innerHTML = "<p>Please select both a subject and a subcategory.</p>";
         return;
     }
 
-    // Find subject index
+    // Get subject index (to match the competency string)
     const subjectIndex = SUBJECTS.indexOf(subject);
     if (subjectIndex === -1) {
         resultsDiv.innerHTML = "<p>Invalid subject selected.</p>";
         return;
     }
 
-    // Find subcategory index
+    // Find the subcategory (class) index
     const subcategoryIndex = jsonData.subjects[subject].indexOf(subcategory);
     if (subcategoryIndex === -1) {
-        resultsDiv.innerHTML = "<p>Invalid subcategory selected.</p>";
+        resultsDiv.innerHTML = "<p>Invalid class selected.</p>";
         return;
     }
 
-    // Calculate required proficiency (subcategory index + 1)
+    // Required proficiency for the class (e.g., Algebra 2 requires level 3)
     const requiredProficiency = subcategoryIndex + 1;
 
-    // Filter tutors based on competency
+    // Filter tutors based on proficiency
     const tutors = loadTutors().filter(tutor => {
         return parseInt(tutor.competency[subjectIndex]) >= requiredProficiency;
     });
 
-    // Display results
+    // Display tutors with all classes they qualify for
     resultsDiv.innerHTML = tutors.length
-        ? tutors.map(tutor => `
-            <p>
-                <strong>${tutor.name}</strong> - Proficiency: ${tutor.competency[subjectIndex]}<br>
-                Email: <a href="mailto:${tutor.email}">${tutor.email}</a><br>
-                Phone: ${tutor.phone}
-            </p>
-        `).join("")
-        : `<p>No tutors found for ${subcategory} (requires level ${requiredProficiency}+).</p>`;
+        ? tutors.map(tutor => displayTutorClasses(tutor, subject, subjectIndex)).join("")
+        : `<p>No tutors found for ${subcategory} (requires proficiency level ${requiredProficiency}+).</p>`;
 }
 
-
-// Dynamically update subcategories based on subject selection
-function updateSubcategories() {
-    const subject = document.getElementById("subject").value; // Get selected subject
-    const subcategorySelect = document.getElementById("subcategory"); // Subcategory dropdown
-    subcategorySelect.innerHTML = ""; // Clear previous options
-
-    // If a subject is selected and it exists in the `subjects` object
-    if (subject && jsonData.subjects[subject]) {
-        subcategorySelect.style.display = "block"; // Show dropdown
-        jsonData.subjects[subject].forEach(sub => {
-            const option = document.createElement("option");
-            option.value = sub; // Value of the subcategory
-            option.textContent = sub; // Display text
-            subcategorySelect.appendChild(option);
-        });
-    } else {
-        subcategorySelect.style.display = "none"; // Hide dropdown if no subject selected
-    }
-}
 
 // Event Listeners
 document.addEventListener("DOMContentLoaded", () => {
