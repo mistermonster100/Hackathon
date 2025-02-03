@@ -223,6 +223,7 @@ function displayTutorClasses(tutor, subject, subjectIndex) {
 }
 
 function updateSubcategories() {
+            print("updateSubcategories is working");
             const subject = document.getElementById("subject").value;
             const subcategorySelect = document.getElementById("subcategory");
             subcategorySelect.innerHTML = '';
@@ -238,8 +239,8 @@ function updateSubcategories() {
             } else {
                 subcategorySelect.style.display = "none";
             }
-        }
-window.updateSubcategories = updateSubcategories;
+}
+
 
 // Event Listeners
 document.addEventListener("DOMContentLoaded", () => {
