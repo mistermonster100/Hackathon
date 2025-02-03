@@ -239,6 +239,7 @@ function updateSubcategories() {
                 subcategorySelect.style.display = "none";
             }
         }
+window.updateSubcategories = updateSubcategories;
 
 // Event Listeners
 document.addEventListener("DOMContentLoaded", () => {
