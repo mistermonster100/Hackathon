@@ -231,6 +231,96 @@ function displayTutorClasses(tutor, subject, subjectIndex) {
         </div>
     `;
 }
+function createAccount(event) {
+    event.preventDefault();
+
+    const email = document.getElementById("email").value;
+    const studentID = document.getElementById("student-id").value;
+    const phone = document.getElementById("phone").value || "N/A";
+
+    // Check if account already exists
+    let accounts = JSON.parse(localStorage.getItem("accounts")) || [];
+    if (accounts.some(account => account.email === email)) {
+        document.getElementById("message").innerText = "Account with this email already exists!";
+        return;
+    }
+
+    // Create new account
+    const newAccount = {
+        email,
+        studentID,
+        phone,
+        competency: "0000000" // Default competency
+    };
+
+    accounts.push(newAccount);
+    localStorage.setItem("accounts", JSON.stringify(accounts));
+    document.getElementById("message").innerText = "Account created successfully!";
+    document.getElementById("signup-form").reset();
+}
+
+document.getElementById("signup-form")?.addEventListener("submit", createAccount);
+
+function loginAccount(event) {
+    event.preventDefault();
+
+    const email = document.getElementById("login-email").value;
+    const studentID = document.getElementById("login-student-id").value;
+
+    const accounts = JSON.parse(localStorage.getItem("accounts")) || [];
+    const account = accounts.find(acc => acc.email === email && acc.studentID === studentID);
+
+    if (!account) {
+        document.getElementById("account-message").innerText = "Invalid email or student ID!";
+        return;
+    }
+
+    // Store session data in localStorage
+    localStorage.setItem("loggedInAccount", JSON.stringify(account));
+    showAccountDetails(account);
+}
+
+function showAccountDetails(account) {
+    document.getElementById("login-form").style.display = "none";
+    document.getElementById("account-section").style.display = "block";
+
+    document.getElementById("account-name").innerText = account.email.split('@')[0];
+    document.getElementById("account-email").innerText = account.email;
+}
+
+function addSkill() {
+    const code = document.getElementById("teacher-code").value;
+    const account = JSON.parse(localStorage.getItem("loggedInAccount"));
+
+    if (!VALID_CODES.hasOwnProperty(code)) {
+        alert("Invalid teacher code!");
+        return;
+    }
+
+    const { subject, level } = VALID_CODES[code];
+    const subjectIndex = SUBJECTS.indexOf(subject);
+
+    let skillDigits = account.competency.split("").map(Number);
+    skillDigits[subjectIndex] = level;
+    account.competency = skillDigits.join("");
+
+    // Update account in localStorage
+    let accounts = JSON.parse(localStorage.getItem("accounts"));
+    const accountIndex = accounts.findIndex(acc => acc.email === account.email);
+    accounts[accountIndex] = account;
+
+    localStorage.setItem("accounts", JSON.stringify(accounts));
+    localStorage.setItem("loggedInAccount", JSON.stringify(account));
+
+    alert(`Skill for ${subject} updated to level ${level}.`);
+}
+
+function logout() {
+    localStorage.removeItem("loggedInAccount");
+    location.reload();
+}
+
+document.getElementById("login-form")?.addEventListener("submit", loginAccount);
 
 function updateSubcategories() {
             console.log("updateSubcategories is working");
