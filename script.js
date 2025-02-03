@@ -208,6 +208,20 @@ async function findTutors() {
         : `<p>No tutors found for ${subcategory} (requires proficiency level ${requiredProficiency}+).</p>`;
 }
 
+function displayTutorClasses(tutor, subject, subjectIndex) {
+    const tutorProficiency = parseInt(tutor.competency[subjectIndex]); // Tutor's proficiency level
+    const classesQualified = jsonData.subjects[subject].slice(0, tutorProficiency); // All classes up to their level
+
+    return `
+        <div class="tutor">
+            <strong>${tutor.name}</strong><br>
+            <strong>Qualified Classes:</strong> ${classesQualified.join(", ")}<br>
+            Email: <a href="mailto:${tutor.email}">${tutor.email}</a><br>
+            Phone: ${tutor.phone || "N/A"}
+        </div>
+    `;
+}
+
 
 // Event Listeners
 document.addEventListener("DOMContentLoaded", () => {
