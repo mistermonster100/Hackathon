@@ -42,6 +42,7 @@ button:hover {
     margin-top: 20px;
 }
 
+/* Styling for tutor cards */
 .tutor {
     border: 1px solid #ccc;
     padding: 15px;
@@ -49,8 +50,34 @@ button:hover {
     border-radius: 5px;
     background: #fff;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    text-align: left;
 }
 
+/* Styling for tutor names and qualified classes */
+.tutor strong {
+    color: #333;
+    font-size: 18px;
+}
+
+.tutor .classes {
+    margin-top: 8px;
+    font-size: 14px;
+    color: #555;
+}
+
+/* Styling for email and phone links */
+.tutor a {
+    color: #007bff;
+    text-decoration: none;
+    display: inline-block;
+    margin-top: 5px;
+}
+
+.tutor a:hover {
+    text-decoration: underline;
+}
+
+/* Signup container styling */
 #signup-container {
     max-width: 350px;
     padding: 20px;
@@ -61,6 +88,7 @@ button:hover {
     text-align: center;
 }
 
+/* Delete container styling */
 #delete-container {
     margin-top: 30px;
     padding: 20px;
@@ -71,6 +99,7 @@ button:hover {
     margin: auto;
 }
 
+/* Input and button styling */
 input, button {
     width: 100%;
     padding: 10px;
@@ -80,12 +109,15 @@ input, button {
 
 input {
     width: 80%;
+    border: 1px solid #ccc;
 }
 
+/* Button hover effect */
 button:hover {
     background-color: #218838;
 }
 
+/* General paragraph styling */
 p {
     font-weight: bold;
 }
