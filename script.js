@@ -231,12 +231,13 @@ function displayTutorClasses(tutor, subject, subjectIndex) {
         </div>
     `;
 }
+//////////////////////////////////////////////////////////////////////////////////////////////
 function createAccount(event) {
     event.preventDefault();
 
-    const email = document.getElementById("email").value;
-    const studentID = document.getElementById("student-id").value;
-    const phone = document.getElementById("phone").value || "N/A";
+    const email = document.getElementById("email").value.trim();
+    const studentID = document.getElementById("student-id").value.trim();
+    const phone = document.getElementById("phone").value.trim() || "N/A";
 
     // Check if account already exists
     let accounts = JSON.parse(localStorage.getItem("accounts")) || [];
@@ -260,12 +261,13 @@ function createAccount(event) {
 }
 
 document.getElementById("signup-form")?.addEventListener("submit", createAccount);
+///////////////////////////////////////////////////////////////////////////////////////
 
 function loginAccount(event) {
     event.preventDefault();
 
-    const email = document.getElementById("login-email").value;
-    const studentID = document.getElementById("login-student-id").value;
+    const email = document.getElementById("login-email").value.trim();
+    const studentID = document.getElementById("login-student-id").value.trim();
 
     const accounts = JSON.parse(localStorage.getItem("accounts")) || [];
     const account = accounts.find(acc => acc.email === email && acc.studentID === studentID);
@@ -279,7 +281,7 @@ function loginAccount(event) {
     localStorage.setItem("loggedInAccount", JSON.stringify(account));
     showAccountDetails(account);
 }
-
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function showAccountDetails(account) {
     document.getElementById("login-form").style.display = "none";
     document.getElementById("account-section").style.display = "block";
