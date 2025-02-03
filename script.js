@@ -34,6 +34,16 @@ const VALID_CODES = {
     "B-AP": { subject: "Biology", level: 2 }  // AP Biology
 };
 
+const subcategories = {
+            "Math": ["Algebra", "Geometry", "Algebra 2", "Precalculus", "Calculus AB", "Calculus BC", "Calculus 3"],
+            "English": ["English 9", "English 10", "English 11", "English 12"],
+            "History": ["World History", "AP World History", "US History", "AP US History", "European History"],
+            "Physics": ["Physics 1", "Physics 2", "Physics C"],
+            "Chemistry": ["Honors Chemistry", "ASCP/AP Chemistry"],
+            "Computer Science": ["CS Principles", "CS 1", "CS A", "Software Development"],
+            "Biology": ["Honors Biology", "AP Biology"]
+};
+
 const MASTER_TEACHER_CODE = "PhiChargeEpsilonNot"; // I wonder what that means? ;) (Hint Gauss's Law)
 function deleteTutor(email, code) {
     if (code !== MASTER_TEACHER_CODE) {
