@@ -8,30 +8,37 @@
     <script src="script.js" defer></script>
 </head>
 <body>
-<div id="container">
-    <h1>Find a Tutor</h1>
+    <div id="container">
+        <h1>Find a Tutor</h1>
 
-    <label for="subject">Select a subject:</label>
-    <select id="subject" onchange="updateSubcategories()">
-        <option value="">--Select a Subject--</option>
-        <option value="Math">Math</option>
-        <option value="Biology">Biology</option>
-        <option value="Chemistry">Chemistry</option>
-        <option value="Physics">Physics</option>
-        <option value="Computer Science">Computer Science</option>
-        <option value="English">English</option>
-        <option value="Social Studies">Social Studies</option>
-    </select>
+        <!-- Subject Selection -->
+        <label for="subject">Select a Subject:</label>
+        <select id="subject" onchange="updateSubcategories()">
+            <option value="">--Select a Subject--</option>
+            <option value="Math">Math</option>
+            <option value="Biology">Biology</option>
+            <option value="Chemistry">Chemistry</option>
+            <option value="Physics">Physics</option>
+            <option value="Computer Science">Computer Science</option>
+            <option value="English">English</option>
+            <option value="Social Studies">Social Studies</option>
+        </select>
 
-    <select id="subcategory" style="display: none;"></select>
+        <!-- Subcategory Selection -->
+        <label for="subcategory">Select a Class:</label>
+        <select id="subcategory" style="display: none;"></select>
 
-    <button onclick="findTutors()">Find Tutors</button>
+        <!-- Find Tutors Button -->
+        <button onclick="findTutors()">Find Tutors</button>
 
-    <div id="results"></div>
-    
-    <button onclick="location.href='manage_account.html'">Manage Account</button>
-    <button onclick="location.href='tutor_signup.html'">Become a Tutor</button>
+        <!-- Results Section -->
+        <div id="results"></div>
 
-</div>
+        <!-- Navigation Buttons -->
+        <div class="nav-buttons">
+            <button onclick="location.href='tutor_signup.html'">Become a Tutor</button>
+            <button onclick="location.href='manage_account.html'">Manage Account</button>
+        </div>
+    </div>
 </body>
 </html>
