@@ -10,8 +10,8 @@ body {
     height: 100vh;
 }
 
-/* Signup Container */
-#signup-container {
+/* Main Container Styling */
+#container, #signup-container {
     background: white;
     padding: 30px;
     border-radius: 12px;
@@ -22,16 +22,22 @@ body {
     margin: auto;
 }
 
-/* Heading Style */
-#signup-container h1 {
+/* Headings */
+h1 {
     color: #333;
     margin-bottom: 20px;
     text-align: center;
     font-size: 24px;
 }
 
-/* Label Styling */
-#signup-container label {
+h2 {
+    color: #555;
+    text-align: center;
+    margin-top: 10px;
+}
+
+/* Labels */
+label {
     display: block;
     margin-top: 15px;
     font-weight: bold;
@@ -39,11 +45,8 @@ body {
     font-size: 14px;
 }
 
-/* Input Fields Styling */
-#signup-container input[type="email"],
-#signup-container input[type="password"],
-#signup-container input[type="text"],
-#signup-container input[type="tel"] {
+/* Input Fields */
+input[type="email"], input[type="password"], input[type="text"], input[type="tel"], select {
     width: 100%;
     padding: 12px;
     margin-top: 8px;
@@ -54,8 +57,8 @@ body {
     background-color: #f9f9f9;
 }
 
-/* Button Styling */
-#signup-container button {
+/* Buttons */
+button {
     width: 100%;
     padding: 12px;
     margin-top: 20px;
@@ -68,35 +71,49 @@ body {
     transition: background-color 0.3s ease;
 }
 
-#signup-container button:hover {
+button:hover {
     background-color: #218838;
 }
 
-/* Message Display Styling */
-#message {
-    margin-top: 15px;
-    font-weight: bold;
-    color: #d9534f;
-    text-align: center;
-}
-
-/* Navigation Buttons */
-#signup-container .nav-buttons {
+/* Navigation Buttons Styling */
+.nav-buttons {
     display: flex;
     justify-content: space-between;
     margin-top: 20px;
 }
 
-#signup-container .nav-buttons button {
+.nav-buttons button {
     width: 48%;
     background-color: #007bff;
 }
 
-#signup-container .nav-buttons button:hover {
+.nav-buttons button:hover {
     background-color: #0056b3;
 }
 
-/* Success Message */
-#signup-container .success {
+/* Message Display */
+#message, #account-message {
+    margin-top: 15px;
+    font-weight: bold;
+    text-align: center;
+    color: #d9534f; /* Red for errors */
+}
+
+/* Success Message Styling */
+.success {
     color: #28a745;
+}
+
+/* Results Section Styling */
+#results {
+    margin-top: 20px;
+}
+
+.tutor {
+    border: 1px solid #ccc;
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 5px;
+    background: #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
