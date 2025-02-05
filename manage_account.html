@@ -8,31 +8,39 @@
     <script src="script.js" defer></script>
 </head>
 <body>
-<div id="manage-container">
-    <h1>Manage Your Account</h1>
-    <form id="login-form">
-        <label for="login-email">School Email (Username):</label>
-        <input type="email" id="login-email" required>
+    <div id="signup-container">
+        <h1>Manage Your Tutor Account</h1>
 
-        <label for="login-student-id">Student ID (Password):</label>
-        <input type="password" id="login-student-id" required>
+        <!-- Login Form -->
+        <form id="login-form">
+            <label for="login-email">School Email (Username):</label>
+            <input type="email" id="login-email" placeholder="yourname@school.edu" required>
 
-        <button type="submit">Login</button>
-    </form>
+            <label for="login-student-id">Student ID (Password):</label>
+            <input type="password" id="login-student-id" placeholder="Enter your student ID" required>
 
-    <div id="account-section" style="display:none;">
-        <h2>Welcome, <span id="account-name"></span></h2>
-        <p>Email: <span id="account-email"></span></p>
+            <button type="submit">Login</button>
+        </form>
 
-        <label for="teacher-code">Add Skill via Teacher Code:</label>
-        <input type="text" id="teacher-code">
-        <button onclick="addSkill()">Add Skill</button>
+        <!-- Account Management Section (Visible After Login) -->
+        <div id="account-section" style="display:none;">
+            <h2>Welcome, <span id="account-name"></span></h2>
+            <p>Email: <span id="account-email"></span></p>
 
-        <button onclick="logout()">Logout</button>
+            <label for="teacher-code">Add Skill via Teacher Code:</label>
+            <input type="text" id="teacher-code">
+            <button onclick="addSkill()">Add Skill</button>
+
+            <button onclick="logout()">Logout</button>
+        </div>
+
+        <p id="account-message"></p>
+
+        <!-- Navigation Buttons -->
+        <div class="nav-buttons">
+            <button onclick="location.href='index.html'">Back to Home</button>
+            <button onclick="location.href='tutor_signup.html'">Create Account</button>
+        </div>
     </div>
-
-    <p id="account-message"></p>
-    <button onclick="location.href='index.html'">Back to Home</button>
-</div>
 </body>
 </html>
