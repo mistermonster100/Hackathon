@@ -240,28 +240,24 @@ function displayTutorClasses(tutor, subject, subjectIndex) {
 function createAccount(event) {
     event.preventDefault();
 
+    const name = document.getElementById("name").value.trim();
     const email = document.getElementById("email").value.trim();
     const studentID = document.getElementById("student-id").value.trim();
     const phone = document.getElementById("phone").value.trim() || "N/A";
 
-    // Extract name from the email (e.g., john.doe -> John Doe)
-    const name = email.split('@')[0].replace(/\./g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-
     let accounts = JSON.parse(localStorage.getItem("accounts")) || [];
 
-    // Check if account already exists
     if (accounts.some(account => account.email === email)) {
         document.getElementById("message").innerText = "Account with this email already exists!";
         return;
     }
 
-    // Create new account with consistent tutor structure
     const newAccount = {
         name,
         email,
         phone,
         studentID,
-        competency: "0000000" // Default competency
+        competency: "0000000"  // Default competency
     };
 
     accounts.push(newAccount);
@@ -269,6 +265,7 @@ function createAccount(event) {
     document.getElementById("message").innerText = "Account created successfully!";
     document.getElementById("signup-form").reset();
 }
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function showAccountDetails(account) {
     document.getElementById("login-form").style.display = "none";
