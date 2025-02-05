@@ -90,19 +90,24 @@ function saveTutors(tutors) {
     localStorage.setItem("tutors", JSON.stringify(tutors));
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Load tutors from `localStorage` or `students.json`
 function loadTutors() {
-    const jsonTutors = jsonData.students || []; // Load preset tutors from JSON
-    const localTutors = JSON.parse(localStorage.getItem("tutors")) || []; // Load new tutors from localStorage
+    const jsonTutors = jsonData.students || []; // Preset tutors from students.json
+    const localTutors = JSON.parse(localStorage.getItem("tutors")) || []; // Tutors added before account system
+    const accounts = JSON.parse(localStorage.getItem("accounts")) || []; // New tutors created via account system
 
-    // Combine and deduplicate tutors based on unique email
-    const combinedTutors = [...jsonTutors, ...localTutors];
+    // Merge all tutor data sources
+    const combinedTutors = [...jsonTutors, ...localTutors, ...accounts];
+
+    // Remove duplicates based on unique email addresses
     const uniqueTutors = combinedTutors.filter((tutor, index, self) =>
-        index === self.findIndex(t => t.email === tutor.email) // Deduplicate by email
+        index === self.findIndex(t => t.email === tutor.email)
     );
 
     return uniqueTutors;
 }
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Update tutor's skill level
 function updateSkill(tutor, code, level) {
@@ -239,18 +244,23 @@ function createAccount(event) {
     const studentID = document.getElementById("student-id").value.trim();
     const phone = document.getElementById("phone").value.trim() || "N/A";
 
-    // Check if account already exists
+    // Extract name from the email (e.g., john.doe -> John Doe)
+    const name = email.split('@')[0].replace(/\./g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+
     let accounts = JSON.parse(localStorage.getItem("accounts")) || [];
+
+    // Check if account already exists
     if (accounts.some(account => account.email === email)) {
         document.getElementById("message").innerText = "Account with this email already exists!";
         return;
     }
 
-    // Create new account
+    // Create new account with consistent tutor structure
     const newAccount = {
+        name,
         email,
-        studentID,
         phone,
+        studentID,
         competency: "0000000" // Default competency
     };
 
@@ -258,28 +268,6 @@ function createAccount(event) {
     localStorage.setItem("accounts", JSON.stringify(accounts));
     document.getElementById("message").innerText = "Account created successfully!";
     document.getElementById("signup-form").reset();
-}
-
-document.getElementById("signup-form")?.addEventListener("submit", createAccount);
-///////////////////////////////////////////////////////////////////////////////////////
-
-function loginAccount(event) {
-    event.preventDefault();
-
-    const email = document.getElementById("login-email").value.trim();
-    const studentID = document.getElementById("login-student-id").value.trim();
-
-    const accounts = JSON.parse(localStorage.getItem("accounts")) || [];
-    const account = accounts.find(acc => acc.email === email && acc.studentID === studentID);
-
-    if (!account) {
-        document.getElementById("account-message").innerText = "Invalid email or student ID!";
-        return;
-    }
-
-    // Store session data in localStorage
-    localStorage.setItem("loggedInAccount", JSON.stringify(account));
-    showAccountDetails(account);
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function showAccountDetails(account) {
