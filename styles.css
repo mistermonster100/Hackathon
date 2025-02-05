@@ -11,7 +11,7 @@ body {
 }
 
 /* Main Container Styling */
-#container, #signup-container {
+#container, #signup-container, #manage-container {
     background: white;
     padding: 30px;
     border-radius: 12px;
