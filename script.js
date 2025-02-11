@@ -129,7 +129,7 @@ function updateSkill(tutor, code, level) {
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Add or update a tutor's profile
-function addOrUpdateTutor(name, email, phone, code = null) {
+function addOrUpdateTutor(name, email, phone, code = "M-A1") {
     let tutors = loadTutors();
     let tutor = tutors.find(t => t.email === email);
 
