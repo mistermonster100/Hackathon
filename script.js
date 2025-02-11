@@ -272,7 +272,7 @@ function showAccountDetails(account) {
     document.getElementById("account-name").innerText = account.email.split('@')[0];
     document.getElementById("account-email").innerText = account.email;
 }
-
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function addSkill() {
     const code = document.getElementById("teacher-code").value;
     const account = JSON.parse(localStorage.getItem("loggedInAccount"));
@@ -299,14 +299,62 @@ function addSkill() {
 
     alert(`Skill for ${subject} updated to level ${level}.`);
 }
-
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function logout() {
     localStorage.removeItem("loggedInAccount");
     location.reload();
 }
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function loginAccount(event) {
+    event.preventDefault();
 
+    const email = document.getElementById("login-email").value.trim();
+    const studentID = document.getElementById("login-student-id").value.trim();
+
+    const accounts = JSON.parse(localStorage.getItem("accounts")) || [];
+    const account = accounts.find(acc => acc.email === email && acc.studentID === studentID);
+
+    if (!account) {
+        document.getElementById("account-message").innerText = "Invalid email or student ID!";
+        return;
+    }
+
+    // Store session data in localStorage
+    localStorage.setItem("loggedInAccount", JSON.stringify(account));
+
+    // Redirect to dashboard
+    window.location.href = "dashboard.html";
+}
+
+// Attach login event listener
 document.getElementById("login-form")?.addEventListener("submit", loginAccount);
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function loadDashboard() {
+    const account = JSON.parse(localStorage.getItem("loggedInAccount"));
 
+    if (!account) {
+        alert("You must log in first!");
+        window.location.href = "manage_account.html";
+        return;
+    }
+
+    // Populate dashboard with user info
+    document.getElementById("account-name").innerText = account.name || account.email.split('@')[0];
+    document.getElementById("account-email").innerText = account.email;
+}
+
+// Attach function to run when dashboard loads
+document.addEventListener("DOMContentLoaded", () => {
+    if (window.location.pathname.includes("dashboard.html")) {
+        loadDashboard();
+    }
+});
+
+function logout() {
+    localStorage.removeItem("loggedInAccount");
+    window.location.href = "manage_account.html";
+}
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function updateSubcategories() {
             console.log("updateSubcategories is working");
             const subject = document.getElementById("subject").value;
@@ -325,7 +373,7 @@ function updateSubcategories() {
                 subcategorySelect.style.display = "none";
             }
 }
-
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Event Listeners
 document.addEventListener("DOMContentLoaded", () => {
