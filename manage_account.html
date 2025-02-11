@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manage Tutor Account</title>
+    <title>Manage Account</title>
     <link rel="stylesheet" href="styles.css">
     <script src="script.js" defer></script>
 </head>
 <body>
-    <div id="signup-container">
+    <div id="manage-container">
         <h1>Manage Your Tutor Account</h1>
 
         <!-- Login Form -->
@@ -21,18 +21,6 @@
 
             <button type="submit">Login</button>
         </form>
-
-        <!-- Account Management Section (Visible After Login) -->
-        <div id="account-section" style="display:none;">
-            <h2>Welcome, <span id="account-name"></span></h2>
-            <p>Email: <span id="account-email"></span></p>
-
-            <label for="teacher-code">Add Skill via Teacher Code:</label>
-            <input type="text" id="teacher-code">
-            <button onclick="addSkill()">Add Skill</button>
-
-            <button onclick="logout()">Logout</button>
-        </div>
 
         <p id="account-message"></p>
 
