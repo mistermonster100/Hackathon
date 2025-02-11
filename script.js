@@ -174,7 +174,7 @@ function submitSignupForm(event) {
     const name = form.name.value;
     const email = form.email.value;
     const phone = form.phone.value || "N/A";
-    addOrUpdateTutor(name, email, phone);
+    addOrUpdateTutor(name, email, phone, "M-A1");
     form.reset();
 }
 
