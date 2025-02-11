@@ -127,19 +127,11 @@ function updateSkill(tutor, code, level) {
 
     return { success: true, message: `Successfully updated ${SUBJECTS[subjectIndex]} to level ${level}.` };
 }
-
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Add or update a tutor's profile
-function addOrUpdateTutor(name, email, phone, code) {
+function addOrUpdateTutor(name, email, phone, code = null) {
     let tutors = loadTutors();
     let tutor = tutors.find(t => t.email === email);
-    
-    if (!VALID_CODES.hasOwnProperty(code)) {
-        console.log(code);
-        alert("Invalid teacher code! Please enter a valid teacher-provided code.");
-        return;
-    }
-
-    const { subject, level } = VALID_CODES[code];
 
     if (!tutor) {
         tutor = {
@@ -151,22 +143,31 @@ function addOrUpdateTutor(name, email, phone, code) {
         tutors.push(tutor);
     }
 
-    // Assign the correct skill level based on the teacher code
-    const subjectIndex = SUBJECTS.indexOf(subject);
-    if (subjectIndex === -1) {
-        alert("Error: Subject not found.");
-        return;
+    // If a teacher code is provided, validate and update skills
+    if (code) {
+        if (!VALID_CODES.hasOwnProperty(code)) {
+            console.log(code);
+            alert("Invalid teacher code! Please enter a valid teacher-provided code.");
+            return;
+        }
+
+        const { subject, level } = VALID_CODES[code];
+        const subjectIndex = SUBJECTS.indexOf(subject);
+        if (subjectIndex === -1) {
+            alert("Error: Subject not found.");
+            return;
+        }
+
+        // Assign the correct skill level
+        let skillDigits = tutor.competency.split("").map(Number);
+        skillDigits[subjectIndex] = level;
+        tutor.competency = skillDigits.join("");
     }
 
-    // Update the competency string
-    let skillDigits = tutor.competency.split("").map(Number);
-    skillDigits[subjectIndex] = level;
-    tutor.competency = skillDigits.join("");
-
     saveTutors(tutors);
-    alert(`Successfully set ${subject} skill to level ${level} for ${name}.`);
+    alert(`Tutor profile updated successfully${code ? `: ${subject} skill set to level ${level}` : ""}.`);
 }
-
+////////////////////////////////////////////////////////////////////////////////////////////////////
 // Handle tutor signup form submission
 function submitSignupForm(event) {
     event.preventDefault();
@@ -175,10 +176,10 @@ function submitSignupForm(event) {
     const name = form.name.value;
     const email = form.email.value;
     const phone = form.phone.value || "N/A";
-    addOrUpdateTutor(name, email, phone, "M-A1");
+    addOrUpdateTutor(name, email, phone);
     form.reset();
 }
-
+/////////////////////////////////////////////////////////////////////////////////////////////////
 // Find tutors based on selected subject and subcategory
 async function findTutors() {
     await loadJSON(); // Load data from JSON
