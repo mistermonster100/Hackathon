@@ -132,8 +132,9 @@ function updateSkill(tutor, code, level) {
 function addOrUpdateTutor(name, email, phone, code) {
     let tutors = loadTutors();
     let tutor = tutors.find(t => t.email === email);
-
+    
     if (!VALID_CODES.hasOwnProperty(code)) {
+        console.log(code);
         alert("Invalid teacher code! Please enter a valid teacher-provided code.");
         return;
     }
