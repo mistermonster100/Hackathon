@@ -1,1 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tutor Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="script.js" defer></script>
+</head>
+<body>
+    <div id="dashboard-container">
+        <h1>Tutor Dashboard</h1>
 
+        <h2>Welcome, <span id="account-name"></span></h2>
+        <p>Email: <span id="account-email"></span></p>
+
+        <label for="teacher-code">Add Skill via Teacher Code:</label>
+        <input type="text" id="teacher-code">
+        <button onclick="addSkill()">Add Skill</button>
+
+        <button onclick="logout()">Logout</button>
+
+        <div class="nav-buttons">
+            <button onclick="location.href='index.html'">Back to Home</button>
+        </div>
+    </div>
+</body>
+</html>
