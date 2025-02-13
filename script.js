@@ -132,7 +132,6 @@ function updateSkill(tutor, code, level) {
 function addOrUpdateTutor(name, email, phone, code = "M-A1") {
     let tutors = loadTutors();
     let tutor = tutors.find(t => t.email === email);
-
     if (!tutor) {
         tutor = {
             name,
@@ -144,7 +143,7 @@ function addOrUpdateTutor(name, email, phone, code = "M-A1") {
     }
 
     // If a teacher code is provided, validate and update skills
-    if (code) {
+    if (code != null) {
         if (!VALID_CODES.hasOwnProperty(code)) {
             console.log(code);
             alert("Invalid teacher code! Please enter a valid teacher-provided code.");
@@ -152,6 +151,8 @@ function addOrUpdateTutor(name, email, phone, code = "M-A1") {
         }
 
         const { subject, level } = VALID_CODES[code];
+        console.log(subject);
+        console.log(code);
         const subjectIndex = SUBJECTS.indexOf(subject);
         if (subjectIndex === -1) {
             alert("Error: Subject not found.");
@@ -162,11 +163,14 @@ function addOrUpdateTutor(name, email, phone, code = "M-A1") {
         let skillDigits = tutor.competency.split("").map(Number);
         skillDigits[subjectIndex] = level;
         tutor.competency = skillDigits.join("");
+        alert(`Tutor profile updated successfully${code ? `: ${subject} skill set to level ${level}` : ""}.`);
+    }else{
+        alert("Tutor profile updated successfully");
     }
 
     saveTutors(tutors);
-    alert(`Tutor profile updated successfully${code ? `: ${subject} skill set to level ${level}` : ""}.`);
 }
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Handle tutor signup form submission
 function submitSignupForm(event) {
