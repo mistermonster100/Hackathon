@@ -240,31 +240,50 @@ function displayTutorClasses(tutor, subject, subjectIndex) {
 function createAccount(event) {
     event.preventDefault();
 
-    const name = document.getElementById("name").value.trim();
     const email = document.getElementById("email").value.trim();
     const studentID = document.getElementById("student-id").value.trim();
     const phone = document.getElementById("phone").value.trim() || "N/A";
 
+    // Extract name from email (e.g., "john.doe" -> "John Doe")
+    const name = email.split('@')[0].replace(/\./g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+
     let accounts = JSON.parse(localStorage.getItem("accounts")) || [];
 
+    // Check if account already exists
     if (accounts.some(account => account.email === email)) {
-        document.getElementById("message").innerText = "Account with this email already exists!";
+        document.getElementById("message").innerText = "⚠️ Account with this email already exists!";
+        document.getElementById("message").style.color = "red";
         return;
     }
 
+    // Create new account
     const newAccount = {
         name,
         email,
         phone,
         studentID,
-        competency: "0000000"  // Default competency
+        competency: "0000000" // Default competency
     };
 
     accounts.push(newAccount);
     localStorage.setItem("accounts", JSON.stringify(accounts));
-    document.getElementById("message").innerText = "Account created successfully!";
+
+    // ✅ Show confirmation message
+    document.getElementById("message").innerText = "✅ Account created successfully!";
+    document.getElementById("message").style.color = "green";
+
+    // ✅ Clear the fields
     document.getElementById("signup-form").reset();
+
+    // ✅ Remove the success message after a few seconds
+    setTimeout(() => {
+        document.getElementById("message").innerText = "";
+    }, 3000);
 }
+
+// Attach the function to the form submit event
+document.getElementById("signup-form")?.addEventListener("submit", createAccount);
+
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function showAccountDetails(account) {
