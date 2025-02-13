@@ -143,7 +143,7 @@ function addOrUpdateTutor(name, email, phone, code = "M-A1") {
     }
 
     // If a teacher code is provided, validate and update skills
-    if (code != null) {
+    if (code !== null) {
         if (!VALID_CODES.hasOwnProperty(code)) {
             console.log(code);
             alert("Invalid teacher code! Please enter a valid teacher-provided code.");
@@ -164,11 +164,13 @@ function addOrUpdateTutor(name, email, phone, code = "M-A1") {
         skillDigits[subjectIndex] = level;
         tutor.competency = skillDigits.join("");
         alert(`Tutor profile updated successfully${code ? `: ${subject} skill set to level ${level}` : ""}.`);
+        console.log(tutors);
+        saveTutors(tutors);
     }else{
         alert("Tutor profile updated successfully");
+        console.log(tutors);
+        saveTutors(tutors);
     }
-
-    saveTutors(tutors);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
