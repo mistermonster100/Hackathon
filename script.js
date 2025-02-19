@@ -1,38 +1,42 @@
 // Valid teacher-provided codes for certification
+//should be able to add any code and class as long as you follow the correct format
 const VALID_CODES = {
-    "M-A1": { subject: "Math", level: 1 },  // Algebra 1
-    "M-GE": { subject: "Math", level: 2 },  // Geometry
-    "M-A2": { subject: "Math", level: 3 },  // Algebra 2
-    "M-PC": { subject: "Math", level: 4 },  // Precalculus
-    "M-CAB": { subject: "Math", level: 5 }, // Calculus AB
-    "M-CBC": { subject: "Math", level: 6 }, // Calculus BC
-    "M-C3": { subject: "Math", level: 7 },  // Calculus 3
+    "M-A1": { subject: "Math", className: "Algebra 1" },
+    "M-GE": { subject: "Math", className: "Geometry" },
+    "M-A2": { subject: "Math", className: "Algebra 2" },
+    "M-PC": { subject: "Math", className: "Precalculus" },
+    "M-CAB": { subject: "Math", className: "Calculus AB" },
+    "M-CBC": { subject: "Math", className: "Calculus BC" },
+    "M-C3": { subject: "Math", className: "Calculus 3" },
 
-    "E-9": { subject: "English", level: 1 },  // English 9
-    "E-10": { subject: "English", level: 2 }, // English 10
-    "E-11": { subject: "English", level: 3 }, // English 11
-    "E-12": { subject: "English", level: 4 }, // English 12
+    "E-9": { subject: "English", className: "English 9" },
+    "E-10": { subject: "English", className: "English 10" },
+    "E-11": { subject: "English", className: "English 11" },
+    "E-12": { subject: "English", className: "English 12" },
 
-    "S-WH": { subject: "Social Studies", level: 1 },  // World History
-    "S-APH": { subject: "Social Studies", level: 2 }, // AP World History
-    "S-UH": { subject: "Social Studies", level: 3 },  // US History
-    "S-APU": { subject: "Social Studies", level: 4 }, // AP US History
-    "S-EH": { subject: "Social Studies", level: 5 },  // European History
+    "S-WH": { subject: "Social Studies", className: "World History" },
+    "S-APH": { subject: "Social Studies", className: "AP World History" },
+    "S-UH": { subject: "Social Studies", className: "US History" },
+    "S-APU": { subject: "Social Studies", className: "AP US History" },
+    "S-EH": { subject: "Social Studies", className: "European History" },
+    "S-APM": { subject: "Social Studies", className: "AP Microeconomics" },  // 🆕 Added
+    "S-APMA": { subject: "Social Studies", className: "AP Macroeconomics" }, // 🆕 Added
 
-    "P-1": { subject: "Physics", level: 1 },  // Physics 1
-    "P-2": { subject: "Physics", level: 2 },  // Physics 2
-    "P-C": { subject: "Physics", level: 3 },  // Physics C
+    "P-1": { subject: "Physics", className: "Physics 1" },
+    "P-2": { subject: "Physics", className: "Physics 2" },
+    "P-C": { subject: "Physics", className: "Physics C" },
 
-    "C-HC": { subject: "Chemistry", level: 1 },  // Honors Chemistry
-    "C-AP": { subject: "Chemistry", level: 2 },  // AP Chemistry
+    "C-HC": { subject: "Chemistry", className: "Honors Chemistry" },
+    "C-AP": { subject: "Chemistry", className: "AP Chemistry" },
 
-    "CS-P": { subject: "Computer Science", level: 1 }, // CS Principles
-    "CS-1": { subject: "Computer Science", level: 2 }, // CS 1
-    "CS-A": { subject: "Computer Science", level: 3 }, // CS A
+    "CS-P": { subject: "Computer Science", className: "CS Principles" },
+    "CS-1": { subject: "Computer Science", className: "CS 1" },
+    "CS-A": { subject: "Computer Science", className: "CS A" },
 
-    "B-H": { subject: "Biology", level: 1 },  // Honors Biology
-    "B-AP": { subject: "Biology", level: 2 }  // AP Biology
+    "B-H": { subject: "Biology", className: "Honors Biology" },
+    "B-AP": { subject: "Biology", className: "AP Biology" }
 };
+
 
 const subcategories = {
             "Math": ["Algebra", "Geometry", "Algebra 2", "Precalculus", "Calculus AB", "Calculus BC", "Calculus 3"],
@@ -145,26 +149,25 @@ function updateTutor(email, code) {
 
     const { subject, className } = VALID_CODES[code];
 
-    if (!tutor.competency) {
-        tutor.competency = {};
-    }
+    // Ensure competency and visibility exist
+    if (!tutor.competency) tutor.competency = {};
+    if (!tutor.visibility) tutor.visibility = {};
 
     if (!tutor.competency[subject]) {
         tutor.competency[subject] = [];
     }
+    if (!tutor.visibility[subject]) {
+        tutor.visibility[subject] = [];
+    }
 
-    // Add the class if not already in competency
+    // Add the class if not already present
     if (!tutor.competency[subject].includes(className)) {
         tutor.competency[subject].push(className);
     }
 
-    // Ensure visibility matches competency
-    if (!tutor.visibility) {
-        tutor.visibility = {};
-    }
-
-    if (!tutor.visibility[subject]) {
-        tutor.visibility[subject] = [...tutor.competency[subject]];
+    // Automatically enable visibility for new subjects
+    if (!tutor.visibility[subject].includes(className)) {
+        tutor.visibility[subject].push(className);
     }
 
     // Save updates
@@ -172,18 +175,6 @@ function updateTutor(email, code) {
     alert(`Updated tutor: Now qualified for ${className} in ${subject}`);
 }
 
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Handle tutor signup form submission
-function submitSignupForm(event) {
-    event.preventDefault();
-
-    const form = document.getElementById("signup-form");
-    const name = form.name.value;
-    const email = form.email.value;
-    const phone = form.phone.value || "N/A";
-    addOrUpdateTutor(name, email, phone);
-    form.reset();
-}
 /////////////////////////////////////////////////////////////////////////////////////////////////
 // Find tutors based on selected subject and subcategory
 async function findTutors() {
