@@ -129,50 +129,37 @@ function updateSkill(tutor, code, level) {
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Add or update a tutor's profile
-function addOrUpdateTutor(name, email, phone, code = "M-A1") {
-    let tutors = loadTutors();
-    let tutor = tutors.find(t => t.email === email);
+function updateTutor(email, code) {
+    let accounts = JSON.parse(localStorage.getItem("accounts")) || [];
+    let tutor = accounts.find(acc => acc.email === email);
+
     if (!tutor) {
-        tutor = {
-            name,
-            email,
-            phone,
-            competency: "0000000" // Default competency for all subjects (7 digits, all zeroes)
-        };
-        tutors.push(tutor);
+        alert("Tutor account not found!");
+        return;
     }
 
-    // If a teacher code is provided, validate and update skills
-    if (code !== null) {
-        if (!VALID_CODES.hasOwnProperty(code)) {
-            console.log(code);
-            alert("Invalid teacher code! Please enter a valid teacher-provided code.");
-            return;
-        }
-
-        const { subject, level } = VALID_CODES[code];
-        console.log(subject);
-        console.log(code);
-        const subjectIndex = SUBJECTS.indexOf(subject);
-        if (subjectIndex === -1) {
-            alert("Error: Subject not found.");
-            return;
-        }
-
-        // Assign the correct skill level
-        let skillDigits = tutor.competency.split("").map(Number);
-        skillDigits[subjectIndex] = level;
-        tutor.competency = skillDigits.join("");
-        alert(`Tutor profile updated successfully${code ? `: ${subject} skill set to level ${level}` : ""}.`);
-        console.log(tutors);
-        saveTutors(tutors);
-    }else{
-        alert("Tutor profile updated successfully");
-        console.log(tutors);
-        saveTutors(tutors);
+    if (!VALID_CODES.hasOwnProperty(code)) {
+        alert("Invalid teacher code! Please enter a valid teacher-provided code.");
+        return;
     }
+
+    const { subject, level } = VALID_CODES[code];
+    const subjectIndex = SUBJECTS.indexOf(subject);
+
+    if (subjectIndex === -1) {
+        alert("Error: Subject not found.");
+        return;
+    }
+
+    // Update the competency string
+    let skillDigits = tutor.competency.split("").map(Number);
+    skillDigits[subjectIndex] = level;
+    tutor.competency = skillDigits.join("");
+
+    // Save updated tutor data
+    localStorage.setItem("accounts", JSON.stringify(accounts));
+    alert(`Updated ${subject} skill to level ${level}`);
 }
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Handle tutor signup form submission
 function submitSignupForm(event) {
@@ -255,15 +242,14 @@ function createAccount(event) {
 
     let accounts = JSON.parse(localStorage.getItem("accounts")) || [];
 
-    // Check if account already exists
     if (accounts.some(account => account.email === email)) {
         document.getElementById("message").innerText = "⚠️ Account with this email already exists!";
         document.getElementById("message").style.color = "red";
         return;
     }
 
-    // Create new account
-    const newAccount = {
+    // Create new tutor profile
+    const newTutor = {
         name,
         email,
         phone,
@@ -271,25 +257,23 @@ function createAccount(event) {
         competency: "0000000" // Default competency
     };
 
-    accounts.push(newAccount);
+    accounts.push(newTutor);
     localStorage.setItem("accounts", JSON.stringify(accounts));
 
-    // ✅ Show confirmation message
     document.getElementById("message").innerText = "✅ Account created successfully!";
     document.getElementById("message").style.color = "green";
 
-    // ✅ Clear the fields
+    // Clear the form fields
     document.getElementById("signup-form").reset();
 
-    // ✅ Remove the success message after a few seconds
+    // Remove the success message after 3 seconds
     setTimeout(() => {
         document.getElementById("message").innerText = "";
     }, 3000);
 }
 
-// Attach the function to the form submit event
+// Attach event listener
 document.getElementById("signup-form")?.addEventListener("submit", createAccount);
-
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function showAccountDetails(account) {
