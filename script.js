@@ -161,22 +161,25 @@ function updateTutor(email, code) {
         tutor.visibility[subject] = [];
     }
 
-    // Add the class if it's not already present
-    if (!tutor.competency[subject].includes(className)) {
-        tutor.competency[subject].push(className);
-        tutor.visibility[subject].push(className); // Default: Visible
-    } else {
+    // Check if class is already added
+    if (tutor.competency[subject].includes(className)) {
         alert(`Tutor is already qualified for ${className}`);
         return;
     }
 
-    // Save updates
+    // Add the class
+    tutor.competency[subject].push(className);
+    tutor.visibility[subject].push(className); // Default: Visible
+
+    // Save updates to localStorage
     accounts[tutorIndex] = tutor;
     localStorage.setItem("accounts", JSON.stringify(accounts));
 
-    // Show confirmation & refresh Manage Account
+    // Refresh Manage Subjects section
+    loadTutorSubjects();
+
+    // Show confirmation
     alert(`✅ Updated: ${tutor.name} is now qualified for ${className} in ${subject}`);
-    loadTutorSubjects(); // Refresh Manage Account UI
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
