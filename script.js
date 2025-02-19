@@ -143,23 +143,35 @@ function updateTutor(email, code) {
         return;
     }
 
-    const { subject, level } = VALID_CODES[code];
-    const subjectIndex = SUBJECTS.indexOf(subject);
+    const { subject, className } = VALID_CODES[code];
 
-    if (subjectIndex === -1) {
-        alert("Error: Subject not found.");
-        return;
+    if (!tutor.competency) {
+        tutor.competency = {};
     }
 
-    // Update the competency string
-    let skillDigits = tutor.competency.split("").map(Number);
-    skillDigits[subjectIndex] = level;
-    tutor.competency = skillDigits.join("");
+    if (!tutor.competency[subject]) {
+        tutor.competency[subject] = [];
+    }
 
-    // Save updated tutor data
+    // Add the class if not already in competency
+    if (!tutor.competency[subject].includes(className)) {
+        tutor.competency[subject].push(className);
+    }
+
+    // Ensure visibility matches competency
+    if (!tutor.visibility) {
+        tutor.visibility = {};
+    }
+
+    if (!tutor.visibility[subject]) {
+        tutor.visibility[subject] = [...tutor.competency[subject]];
+    }
+
+    // Save updates
     localStorage.setItem("accounts", JSON.stringify(accounts));
-    alert(`Updated ${subject} skill to level ${level}`);
+    alert(`Updated tutor: Now qualified for ${className} in ${subject}`);
 }
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Handle tutor signup form submission
 function submitSignupForm(event) {
@@ -175,47 +187,38 @@ function submitSignupForm(event) {
 /////////////////////////////////////////////////////////////////////////////////////////////////
 // Find tutors based on selected subject and subcategory
 async function findTutors() {
-    await loadJSON(); // Load data from JSON
+    await loadJSON(); // Load subjects.json
 
-    const subject = document.getElementById("subject").value; // Selected subject (e.g., Math)
-    const subcategory = document.getElementById("subcategory").value; // Selected class (e.g., Algebra 2)
+    const subject = document.getElementById("subject").value;
+    const subcategory = document.getElementById("subcategory").value;
     const resultsDiv = document.getElementById("results");
-    resultsDiv.innerHTML = ""; // Clear previous results
+    resultsDiv.innerHTML = "";
 
-    // Validate selection
     if (!subject || !subcategory) {
         resultsDiv.innerHTML = "<p>Please select both a subject and a subcategory.</p>";
         return;
     }
 
-    // Get subject index (to match the competency string)
-    const subjectIndex = SUBJECTS.indexOf(subject);
-    if (subjectIndex === -1) {
-        resultsDiv.innerHTML = "<p>Invalid subject selected.</p>";
-        return;
-    }
+    const tutors = await loadTutors();
 
-    // Find the subcategory (class) index
-    const subcategoryIndex = jsonData.subjects[subject].indexOf(subcategory);
-    if (subcategoryIndex === -1) {
-        resultsDiv.innerHTML = "<p>Invalid class selected.</p>";
-        return;
-    }
+    // Filter tutors based on visibility settings
+    const filteredTutors = tutors.filter(tutor => 
+        tutor.visibility?.[subject]?.includes(subcategory)
+    );
 
-    // Required proficiency for the class (e.g., Algebra 2 requires level 3)
-    const requiredProficiency = subcategoryIndex + 1;
-
-    // Filter tutors based on proficiency
-    const tutors = loadTutors().filter(tutor => {
-        return parseInt(tutor.competency[subjectIndex]) >= requiredProficiency;
-    });
-
-    // Display tutors with all classes they qualify for
-    resultsDiv.innerHTML = tutors.length
-        ? tutors.map(tutor => displayTutorClasses(tutor, subject, subjectIndex)).join("")
-        : `<p>No tutors found for ${subcategory} (requires proficiency level ${requiredProficiency}+).</p>`;
+    resultsDiv.innerHTML = filteredTutors.length
+        ? filteredTutors.map(tutor => `
+            <div class="tutor">
+                <strong>${tutor.name}</strong><br>
+                <strong>Qualified Classes:</strong> ${tutor.visibility[subject].join(", ")}<br>
+                Email: <a href="mailto:${tutor.email}">${tutor.email}</a><br>
+                Phone: ${tutor.phone || "N/A"}
+            </div>
+        `).join("")
+        : `<p>No tutors found for ${subcategory}.</p>`;
 }
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function displayTutorClasses(tutor, subject, subjectIndex) {
     const tutorProficiency = parseInt(tutor.competency[subjectIndex]); // Tutor's proficiency level
     const classesQualified = jsonData.subjects[subject].slice(0, tutorProficiency); // All classes up to their level
@@ -365,6 +368,73 @@ function logout() {
     localStorage.removeItem("loggedInAccount");
     window.location.href = "manage_account.html";
 }
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function loadTutorSubjects() {
+    const account = JSON.parse(localStorage.getItem("loggedInAccount"));
+    if (!account || !account.competency) return;
+
+    const container = document.getElementById("subjects-container");
+    container.innerHTML = "";
+
+    Object.keys(account.competency).forEach(subject => {
+        const subjectDiv = document.createElement("div");
+        subjectDiv.innerHTML = `<h3>${subject}</h3>`;
+
+        account.competency[subject].forEach(className => {
+            const checkbox = document.createElement("input");
+            checkbox.type = "checkbox";
+            checkbox.checked = account.visibility?.[subject]?.includes(className) ?? true;
+            checkbox.onchange = () => toggleVisibility(subject, className, checkbox.checked);
+            
+            const label = document.createElement("label");
+            label.appendChild(checkbox);
+            label.append(` ${className}`);
+
+            subjectDiv.appendChild(label);
+            subjectDiv.appendChild(document.createElement("br"));
+        });
+
+        container.appendChild(subjectDiv);
+    });
+}
+
+function toggleVisibility(subject, className, isChecked) {
+    let account = JSON.parse(localStorage.getItem("loggedInAccount"));
+
+    if (!account.visibility) {
+        account.visibility = {};
+    }
+
+    if (!account.visibility[subject]) {
+        account.visibility[subject] = [];
+    }
+
+    if (isChecked) {
+        if (!account.visibility[subject].includes(className)) {
+            account.visibility[subject].push(className);
+        }
+    } else {
+        account.visibility[subject] = account.visibility[subject].filter(c => c !== className);
+    }
+
+    localStorage.setItem("loggedInAccount", JSON.stringify(account));
+
+    let accounts = JSON.parse(localStorage.getItem("accounts"));
+    const accountIndex = accounts.findIndex(acc => acc.email === account.email);
+    accounts[accountIndex] = account;
+    localStorage.setItem("accounts", JSON.stringify(accounts));
+}
+
+function saveVisibility() {
+    alert("Visibility preferences saved!");
+}
+
+// Load subjects on dashboard
+document.addEventListener("DOMContentLoaded", () => {
+    if (window.location.pathname.includes("dashboard.html")) {
+        loadTutorSubjects();
+    }
+});
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function updateSubcategories() {
             console.log("updateSubcategories is working");
