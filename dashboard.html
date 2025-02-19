@@ -14,9 +14,10 @@
         <h2>Welcome, <span id="account-name"></span></h2>
         <p>Email: <span id="account-email"></span></p>
 
-        <label for="teacher-code">Add Skill via Teacher Code:</label>
+       <label for="teacher-code">Add Skill via Teacher Code:</label>
         <input type="text" id="teacher-code">
-        <button onclick="addSkill()">Add Skill</button>
+        <button onclick="updateTutor(document.getElementById('account-email').innerText, document.getElementById('teacher-code').value)">Update Skill</button>
+
 
         <button onclick="logout()">Logout</button>
 
