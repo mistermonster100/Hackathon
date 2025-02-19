@@ -135,9 +135,9 @@ function updateSkill(tutor, code, level) {
 // Add or update a tutor's profile
 function updateTutor(email, code) {
     let accounts = JSON.parse(localStorage.getItem("accounts")) || [];
-    let tutor = accounts.find(acc => acc.email === email);
+    let tutorIndex = accounts.findIndex(acc => acc.email === email);
 
-    if (!tutor) {
+    if (tutorIndex === -1) {
         alert("Tutor account not found!");
         return;
     }
@@ -147,9 +147,10 @@ function updateTutor(email, code) {
         return;
     }
 
+    const tutor = accounts[tutorIndex];
     const { subject, className } = VALID_CODES[code];
 
-    // Ensure competency and visibility exist
+    // Ensure competency & visibility exist
     if (!tutor.competency) tutor.competency = {};
     if (!tutor.visibility) tutor.visibility = {};
 
@@ -160,19 +161,22 @@ function updateTutor(email, code) {
         tutor.visibility[subject] = [];
     }
 
-    // Add the class if not already present
+    // Add the class if it's not already present
     if (!tutor.competency[subject].includes(className)) {
         tutor.competency[subject].push(className);
-    }
-
-    // Automatically enable visibility for new subjects
-    if (!tutor.visibility[subject].includes(className)) {
-        tutor.visibility[subject].push(className);
+        tutor.visibility[subject].push(className); // Default: Visible
+    } else {
+        alert(`Tutor is already qualified for ${className}`);
+        return;
     }
 
     // Save updates
+    accounts[tutorIndex] = tutor;
     localStorage.setItem("accounts", JSON.stringify(accounts));
-    alert(`Updated tutor: Now qualified for ${className} in ${subject}`);
+
+    // Show confirmation & refresh Manage Account
+    alert(`✅ Updated: ${tutor.name} is now qualified for ${className} in ${subject}`);
+    loadTutorSubjects(); // Refresh Manage Account UI
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -428,23 +432,35 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function updateSubcategories() {
-            console.log("updateSubcategories is working");
-            const subject = document.getElementById("subject").value;
-            const subcategorySelect = document.getElementById("subcategory");
-            subcategorySelect.innerHTML = '';
+    const subject = document.getElementById("subject").value;
+    const subcategorySelect = document.getElementById("subcategory");
+    subcategorySelect.innerHTML = ""; // Clear previous options
 
-            if (subject && subcategories[subject]) {
-                subcategorySelect.style.display = "block";
-                subcategories[subject].forEach(sub => {
-                    let option = document.createElement("option");
-                    option.value = sub;
-                    option.textContent = sub;
-                    subcategorySelect.appendChild(option);
-                });
-            } else {
-                subcategorySelect.style.display = "none";
-            }
+    if (!subject) {
+        subcategorySelect.style.display = "none";
+        return;
+    }
+
+    // Get all classes for the selected subject from VALID_CODES
+    let availableClasses = Object.values(VALID_CODES)
+        .filter(code => code.subject === subject)
+        .map(code => code.className);
+
+    if (availableClasses.length === 0) {
+        subcategorySelect.style.display = "none";
+        return;
+    }
+
+    subcategorySelect.style.display = "block"; // Show dropdown
+
+    availableClasses.forEach(sub => {
+        const option = document.createElement("option");
+        option.value = sub;
+        option.textContent = sub;
+        subcategorySelect.appendChild(option);
+    });
 }
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Event Listeners
