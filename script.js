@@ -41,14 +41,14 @@ const VALID_CODES = {
 const subcategories = {
             "Math": ["Algebra", "Geometry", "Algebra 2", "Precalculus", "Calculus AB", "Calculus BC", "Calculus 3"],
             "English": ["English 9", "English 10", "English 11", "English 12"],
-            "Social Studies": ["World History", "AP World History", "US History", "AP US History", "European History"],
+            "Social Studies": ["World History", "AP World History", "US History", "AP US History", "European History", "AP Microeconomics", "AP Macroeconomics"],
             "Physics": ["Physics 1", "Physics 2", "Physics C"],
             "Chemistry": ["Honors Chemistry", "ACP/AP Chemistry"],
             "Computer Science": ["CS Principles", "CS 1", "CS A", "Software Development"],
             "Biology": ["Honors Biology", "AP Biology"]
 };
 
-const MASTER_TEACHER_CODE = "PhiChargeEpsilonNot"; // I wonder what that means? ;) (Hint Gauss's Law)
+const MASTER_TEACHER_CODE = "PhiChargeEpsilonNot"; // I wonder what that means? ;) (Gauss's Law)
 function deleteTutor(email, code) {
     if (code !== MASTER_TEACHER_CODE) {
         alert("Invalid master code! You do not have permission to delete accounts.");
@@ -218,9 +218,8 @@ function createAccount(event) {
     const email = document.getElementById("email").value.trim();
     const studentID = document.getElementById("student-id").value.trim();
     const phone = document.getElementById("phone").value.trim() || "N/A";
-
-    // Extract name from email (e.g., "john.doe" -> "John Doe")
-    const name = email.split('@')[0].replace(/\./g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+    
+    const name = document.getElementById("name").value.trim();
 
     let accounts = JSON.parse(localStorage.getItem("accounts")) || [];
 
@@ -229,16 +228,18 @@ function createAccount(event) {
         document.getElementById("message").style.color = "red";
         return;
     }
-
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Create new tutor profile
     const newTutor = {
-        name,
-        email,
-        phone,
-        studentID,
-        competency: "0000000" // Default competency
-    };
+    name,
+    email,
+    phone,
+    studentID,
+    competency: {}, 
+    visibility: {}   
+};
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
     accounts.push(newTutor);
     localStorage.setItem("accounts", JSON.stringify(accounts));
 
