@@ -113,25 +113,6 @@ function loadTutors() {
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// Update tutor's skill level
-function updateSkill(tutor, code, level) {
-    if (!VALID_CODES.hasOwnProperty(code)) {
-        return { success: false, message: "Invalid teacher-provided code." };
-    }
-
-    const subjectIndex = VALID_CODES[code]; // Get the subject index based on VALID_CODES
-    if (level < 0 || level > MAX_LEVELS[subjectIndex]) {
-        return { success: false, message: `Invalid skill level for ${SUBJECTS[subjectIndex]}. Max level: ${MAX_LEVELS[subjectIndex]}` };
-    }
-
-    // Update the correct digit in the competency string
-    const skillDigits = tutor.competency.split("").map(Number);
-    skillDigits[subjectIndex] = level;
-    tutor.competency = skillDigits.join("");
-
-    return { success: true, message: `Successfully updated ${SUBJECTS[subjectIndex]} to level ${level}.` };
-}
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Add or update a tutor's profile
 function updateTutor(email, code) {
     let accounts = JSON.parse(localStorage.getItem("accounts")) || [];
