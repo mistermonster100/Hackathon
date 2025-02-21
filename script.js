@@ -236,8 +236,7 @@ const newTutor = {
     phone,
     studentID,
     competency: {},
-    visibility: {},
-    tutoringHistory: []  
+    visibility: {} 
 };
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
     accounts.push(newTutor);
@@ -447,84 +446,7 @@ function updateSubcategories() {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-function logTutoringHours() {
-    let email = localStorage.getItem("loggedInTutor");
-    if (!email) {
-        alert("You must be logged in to log hours.");
-        return;
-    }
 
-    let tutors = JSON.parse(localStorage.getItem("accounts")) || [];
-    let tutor = tutors.find(t => t.email === email);
-
-    if (!tutor) {
-        alert("Tutor not found!");
-        return;
-    }
-
-    let hours = parseFloat(document.getElementById("tutoring-hours").value);
-    let subject = document.getElementById("subject").value;
-    let student = document.getElementById("student").value;
-    let description = document.getElementById("description").value;
-    let teacher = document.getElementById("teacher").value;
-    let password = document.getElementById("teacher-password").value;
-
-    // 🔹 Validate teacher credentials
-    if (!TEACHER_LIST.hasOwnProperty(teacher) || TEACHER_LIST[teacher] !== password) {
-        alert("Invalid teacher credentials! Session will not be verified.");
-        return;
-    }
-
-    let verified = TEACHER_LIST.hasOwnProperty(teacher) && TEACHER_LIST[teacher] === password;
-    let session = {
-    hours,
-    subject,
-    student,
-    description,
-    teacher,
-    verified // ✅ Store whether it's verified or not
-};
-
-
-    tutor.tutoringHistory.push(session);
-
-    // 🔹 Save updated tutor history
-    localStorage.setItem("accounts", JSON.stringify(tutors));
-
-    // ✅ Refresh session list immediately
-    loadTutoringHistory();
-
-    alert("✅ Tutoring session saved successfully!");
-}
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-function loadTutoringHistory() {
-    let email = localStorage.getItem("loggedInTutor");
-    if (!email) return;
-
-    let tutors = JSON.parse(localStorage.getItem("accounts")) || [];
-    let tutor = tutors.find(t => t.email === email);
-    let sessionList = document.getElementById("session-list");
-    sessionList.innerHTML = ""; // Clear old list
-
-    if (!tutor || !tutor.tutoringHistory.length) {
-        sessionList.innerHTML = "<p>No tutoring sessions logged yet.</p>";
-        return;
-    }
-
-    tutor.tutoringHistory.forEach(session => {
-        let sessionDiv = document.createElement("div");
-        sessionDiv.classList.add("tutoring-session");
-        sessionDiv.innerHTML = `
-            <p><strong>Subject:</strong> ${session.subject}</p>
-            <p><strong>Student:</strong> ${session.student}</p>
-            <p><strong>Hours:</strong> ${session.hours}</p>
-            <p><strong>Details:</strong> ${session.description}</p>
-            <p><strong>Teacher:</strong> ${session.teacher} ${session.verified ? "✅ Verified" : "❌ Unverified"}</p>
-            <hr>
-        `;
-        sessionList.appendChild(sessionDiv);
-    });
-}
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Event Listeners
 document.addEventListener("DOMContentLoaded", () => {
