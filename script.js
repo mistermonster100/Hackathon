@@ -36,7 +36,7 @@ const VALID_CODES = {
     "B-H": { subject: "Biology", className: "Honors Biology" },
     "B-AP": { subject: "Biology", className: "AP Biology" }
 };
-
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 const subcategories = {
             "Math": ["Algebra", "Geometry", "Algebra 2", "Precalculus", "Calculus AB", "Calculus BC", "Calculus 3"],
@@ -47,14 +47,14 @@ const subcategories = {
             "Computer Science": ["CS Principles", "CS 1", "CS A", "Software Development"],
             "Biology": ["Honors Biology", "AP Biology"]
 };
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+const TEACHER_LIST = {
+    "Mr. Smith": "smith123",
+    "Ms. Johnson": "johnson456",
+    "Dr. Adams": "adams789"
+};
 
-const MASTER_TEACHER_CODE = "PhiChargeEpsilonNot"; // I wonder what that means? ;) (Gauss's Law)
-function deleteTutor(email, code) {
-    if (code !== MASTER_TEACHER_CODE) {
-        alert("Invalid master code! You do not have permission to delete accounts.");
-        return;
-    }
-
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     let tutors = JSON.parse(localStorage.getItem("tutors")) || [];
 
     // Check if the tutor exists
@@ -230,15 +230,15 @@ function createAccount(event) {
     }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Create new tutor profile
-    const newTutor = {
+const newTutor = {
     name,
     email,
     phone,
     studentID,
-    competency: {}, 
-    visibility: {}   
+    competency: {},
+    visibility: {},
+    tutoringHistory: []  
 };
-
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
     accounts.push(newTutor);
     localStorage.setItem("accounts", JSON.stringify(accounts));
@@ -447,7 +447,85 @@ function updateSubcategories() {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function logTutoringHours() {
+    let email = localStorage.getItem("loggedInTutor");
+    if (!email) {
+        alert("You must be logged in to log hours.");
+        return;
+    }
 
+    let tutors = JSON.parse(localStorage.getItem("accounts")) || [];
+    let tutor = tutors.find(t => t.email === email);
+
+    if (!tutor) {
+        alert("Tutor not found!");
+        return;
+    }
+
+    let hours = parseFloat(document.getElementById("tutoring-hours").value);
+    let subject = document.getElementById("subject").value;
+    let student = document.getElementById("student").value;
+    let description = document.getElementById("description").value;
+    let teacher = document.getElementById("teacher").value;
+    let password = document.getElementById("teacher-password").value;
+
+    // 🔹 Validate teacher credentials
+    if (!TEACHER_LIST.hasOwnProperty(teacher) || TEACHER_LIST[teacher] !== password) {
+        alert("Invalid teacher credentials! Session will not be verified.");
+        return;
+    }
+
+    let verified = TEACHER_LIST.hasOwnProperty(teacher) && TEACHER_LIST[teacher] === password;
+    let session = {
+    hours,
+    subject,
+    student,
+    description,
+    teacher,
+    verified // ✅ Store whether it's verified or not
+};
+
+
+    tutor.tutoringHistory.push(session);
+
+    // 🔹 Save updated tutor history
+    localStorage.setItem("accounts", JSON.stringify(tutors));
+
+    // ✅ Refresh session list immediately
+    loadTutoringHistory();
+
+    alert("✅ Tutoring session saved successfully!");
+}
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function loadTutoringHistory() {
+    let email = localStorage.getItem("loggedInTutor");
+    if (!email) return;
+
+    let tutors = JSON.parse(localStorage.getItem("accounts")) || [];
+    let tutor = tutors.find(t => t.email === email);
+    let sessionList = document.getElementById("session-list");
+    sessionList.innerHTML = ""; // Clear old list
+
+    if (!tutor || !tutor.tutoringHistory.length) {
+        sessionList.innerHTML = "<p>No tutoring sessions logged yet.</p>";
+        return;
+    }
+
+    tutor.tutoringHistory.forEach(session => {
+        let sessionDiv = document.createElement("div");
+        sessionDiv.classList.add("tutoring-session");
+        sessionDiv.innerHTML = `
+            <p><strong>Subject:</strong> ${session.subject}</p>
+            <p><strong>Student:</strong> ${session.student}</p>
+            <p><strong>Hours:</strong> ${session.hours}</p>
+            <p><strong>Details:</strong> ${session.description}</p>
+            <p><strong>Teacher:</strong> ${session.teacher} ${session.verified ? "✅ Verified" : "❌ Unverified"}</p>
+            <hr>
+        `;
+        sessionList.appendChild(sessionDiv);
+    });
+}
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Event Listeners
 document.addEventListener("DOMContentLoaded", () => {
     if (document.getElementById("signup-form")) {
